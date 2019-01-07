@@ -1,10 +1,12 @@
 {
-  "name": "demo",
-  "private": true,
+  "name": "antonioluisgil",
+  "description": "Antonio Gil personal website",
+  "version": "1.0.0",
   "scripts": {
     "build": "gridsome build",
     "dev": "gridsome develop",
-    "explore": "gridsome explore"
+    "explore": "gridsome explore",
+    "deploy": "firebase deploy"
   },
   "dependencies": {
     "gridsome": "^0.3.0"
