@@ -17,3 +17,8 @@ svg[class^='icon-'] {
   mask-repeat: no-repeat;
   width: 2rem;
 }
+
+a {
+  color: var(--theme-color);
+  text-decoration: none;
+}

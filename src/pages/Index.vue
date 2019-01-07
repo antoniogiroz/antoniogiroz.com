@@ -35,7 +35,9 @@
           <h3>
             <span>Contact</span>
           </h3>
-          <p class="card__email">antonio.luis.gil@gmail.com</p>
+          <p class="card__email">
+            <a href="mailto:antonio.luis.gil@gmail.com">antonio.luis.gil@gmail.com</a>
+          </p>
         </div>
       </div>
     </div>

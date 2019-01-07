@@ -1,16 +1,16 @@
 .card {
   background-color: #212324;
-  border-radius: 8px;
+  border-radius: 16px;
   border: solid 1px black;
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.6);
   color: white;
   display: flex;
   flex-direction: column;
-  height: 300px;
   align-items: center;
   padding: 2em 3em;
   text-align: center;
   height: 400px;
+  width: 246px;
 
   .contact-info {
     height: 100%;
