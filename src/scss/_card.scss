@@ -1,0 +1,116 @@
+.card {
+  background-color: #212324;
+  border-radius: 8px;
+  border: solid 1px black;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.6);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  align-items: center;
+  padding: 2em 3em;
+  text-align: center;
+  height: 400px;
+
+  .contact-info {
+    height: 100%;
+    margin-top: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__avatar {
+    border-radius: 50%;
+    box-shadow: 0 0 10px black;
+    width: 125px;
+    height: 125px;
+  }
+
+  &__name {
+    font-weight: 400;
+    font-size: 36px;
+    margin: 0;
+  }
+
+  &__job-title {
+    color: var(--theme-color);
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: 300;
+    margin: 0;
+  }
+
+  &__location {
+    font-style: italic;
+  }
+
+  &__social-info {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  &__email {
+    color: var(--theme-color);
+    font-size: 1.2em;
+  }
+
+  .social-link:hover svg[class^='icon-'] {
+    background-color: var(--theme-color);
+  }
+
+  .icon-twitter {
+    mask: url('../images/twitter.svg');
+  }
+
+  .icon-github {
+    mask: url('../images/github.svg');
+  }
+
+  .icon-linkedin {
+    mask: url('../images/linkedin.svg');
+  }
+
+  p {
+    margin: 0.5em 0 0 0;
+  }
+
+  h3 {
+    text-transform: uppercase;
+    font-size: 0.8em;
+    font-weight: 300;
+
+    span {
+      position: relative;
+
+      &:before,
+      &:after {
+        content: '';
+        position: absolute;
+        border-top: 1px solid var(--theme-color);
+        top: 50%;
+        width: 60%;
+      }
+
+      &:before {
+        right: 100%;
+        margin-right: 8px;
+      }
+
+      &:after {
+        left: 100%;
+        margin-left: 8px;
+      }
+    }
+  }
+
+  .read-more {
+    border: 10px solid #fdfdfd;
+    line-height: 80px;
+    margin: -40px 0 0 -40px;
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    width: 80px;
+  }
+}

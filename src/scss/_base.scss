@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i');
+
+body {
+  height: 100vh;
+  margin: 0;
+  background: linear-gradient(135deg, #0fadbf, var(--theme-color));
+  background-repeat: no-repeat;
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+}
+
+svg[class^='icon-'] {
+  background-color: white;
+  display: inline-block;
+  fill: none;
+  height: 2rem;
+  mask-repeat: no-repeat;
+  width: 2rem;
+}
