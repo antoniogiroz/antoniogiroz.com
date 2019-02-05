@@ -2,8 +2,9 @@
 // Learn more: https://gridsome.org/docs/config
 
 module.exports = {
-  siteName: 'Antonio Luis Gil',
+  siteName: 'Antonio Gil',
   siteDescription: 'Senior Developer',
   siteUrl: 'antonioluisgil.com',
+  titleTemplate: '%s',
   plugins: []
 };

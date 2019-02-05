@@ -5,11 +5,10 @@
   "scripts": {
     "build": "gridsome build",
     "dev": "gridsome develop",
-    "explore": "gridsome explore",
-    "deploy": "firebase deploy"
+    "explore": "gridsome explore"
   },
   "dependencies": {
-    "gridsome": "^0.3.0"
+    "gridsome": "^0.4.7"
   },
   "devDependencies": {
     "node-sass": "^4.11.0",
