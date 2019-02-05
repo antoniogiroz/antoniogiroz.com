@@ -1,7 +1,7 @@
 {
   "name": "antonioluisgil",
   "description": "Antonio Gil personal website",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "build": "gridsome build",
     "dev": "gridsome develop",
