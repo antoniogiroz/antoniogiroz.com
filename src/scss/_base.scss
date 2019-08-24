@@ -1,12 +1,35 @@
-@import url('https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i');
+@font-face {
+  font-family: 'Lato';
+  src: url('../fonts/Lato-Light.woff2') format('woff2'),
+    url('../fonts/Lato-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('../fonts/Lato-Regular.woff2') format('woff2'),
+    url('../fonts/Lato-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
 
 body {
-  height: 100vh;
-  margin: 0;
-  background: linear-gradient(135deg, #0fadbf, var(--theme-color));
+  background: linear-gradient(135deg, #1b7a92, var(--theme-color));
   background-repeat: no-repeat;
   font-family: 'Lato', sans-serif;
   font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: antialiased;
 }
 
 svg[class^='icon-'] {

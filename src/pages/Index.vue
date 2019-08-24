@@ -1,7 +1,7 @@
 <template>
   <Layout>
     <div class="card">
-      <g-image class="card__avatar" src="@/images/avatar.png"/>
+      <g-image class="card__avatar" src="@/images/avatar.jpg" />
 
       <div class="contact-info">
         <div>
@@ -16,17 +16,17 @@
           </h3>
           <div class="card__social-info">
             <a href="https://twitter.com/antonioluisgil" class="social-link" target="_blank">
-              <svg class="icon-twitter"></svg>
+              <svg class="icon-twitter" />
             </a>
             <a href="https://github.com/algil" class="social-link" target="_blank">
-              <svg class="icon-github"></svg>
+              <svg class="icon-github" />
             </a>
             <a
               href="https://www.linkedin.com/in/antonioluisgil/"
               class="social-link"
               target="_blank"
             >
-              <svg class="icon-linkedin"></svg>
+              <svg class="icon-linkedin" />
             </a>
           </div>
         </div>
