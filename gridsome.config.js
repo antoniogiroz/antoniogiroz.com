@@ -3,8 +3,9 @@
 
 module.exports = {
   siteName: 'Antonio Gil',
-  siteDescription: 'Senior Developer',
-  siteUrl: 'antonioluisgil.com',
+  siteDescription: 'Software Developer',
+  siteUrl: 'https://antonioluisgil.com',
   titleTemplate: '%s',
-  plugins: []
+  plugins: [],
+  icon: './src/favicon.jpg'
 };
