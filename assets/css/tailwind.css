@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+
+nav .nuxt-link-exact-active {
+  @apply text-gray-900 bg-gray-400;
+}
+
+@tailwind utilities;
