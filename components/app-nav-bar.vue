@@ -80,6 +80,21 @@
 
 <script>
 export default {
+  created() {
+    const handleEscape = e => {
+      if (e.key === 'Esc' || e.key === 'Escape') {
+        this.$emit('select')
+      }
+    }
+
+    if (process.client) {
+      document.addEventListener('keydown', handleEscape)
+      this.$once('hook:beforeDestroy', () => {
+        document.removeListener('keydown', handleEscape)
+      })
+    }
+  },
+
   methods: {
     select() {
       this.$emit('select')
