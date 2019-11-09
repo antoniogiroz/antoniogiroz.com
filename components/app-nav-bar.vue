@@ -5,6 +5,7 @@
         <nuxt-link
           to="/me"
           class="p-2 rounded block hover:bg-gray-200"
+          @click.native="select"
         >
           About me
         </nuxt-link>
@@ -13,6 +14,7 @@
         <nuxt-link
           to="/contact"
           class="mt-1 p-2 rounded block hover:bg-gray-200"
+          @click.native="select"
         >
           Contact
         </nuxt-link>
@@ -23,6 +25,7 @@
           class="p-2 rounded block hover:text-theme"
           href="https://twitter.com/antonioluisgil"
           target="_blank"
+          @click="select"
         >
           Twitter
         </a>
@@ -40,6 +43,7 @@
           class="p-2 rounded block hover:text-theme"
           href="https://github.com/algil"
           target="_blank"
+          @click="select"
         >
           Github
         </a>
@@ -57,6 +61,7 @@
           class="p-2 rounded block hover:text-theme"
           href="https://www.linkedin.com/in/antonioluisgil"
           target="_blank"
+          @click="select"
         >
           LinkedIn
         </a>
@@ -72,3 +77,13 @@
     </ul>
   </nav>
 </template>
+
+<script>
+export default {
+  methods: {
+    select() {
+      this.$emit('select')
+    }
+  }
+}
+</script>

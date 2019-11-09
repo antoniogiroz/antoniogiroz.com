@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto px-2 py-2 lg:py-8 lg:px-0 lg:flex">
+  <div class="relative container mx-auto px-2 py-2 lg:py-8 lg:px-0 lg:flex">
     <div class="m-2 flex items-center justify-between lg:w-3/12 lg:min-w-64 lg:h-full lg:top-0 lg:sticky lg:p-4 lg:flex lg:flex-col">
       <div class="flex items-center lg:flex-col lg:text-center">
         <nuxt-link
@@ -16,15 +16,22 @@
           <p class="hidden lg:block lg:text-center text-theme">antonioluisgil@gmail.com</p>
         </div>
       </div>
-      <app-nav-bar :class="{'hidden': !showSidebar}" />
+      <app-nav-bar
+        :class="{'hidden': !showSidebar}"
+        @select="showSidebar = false" />
+      <button
+        v-show="showSidebar"
+        class="fixed inset-0 h-full w-full bg-black opacity-50 cursor-default"
+        tabindex="-1"
+        @click="showSidebar = !showSidebar" />
 
       <button
-        class="lg:hidden"
+        class="relative lg:hidden focus:outline-none"
         @click="showSidebar = !showSidebar"
       >
         <icon-close
           v-if="showSidebar"
-          class="w-8 h-8 self-end fill-current text-gray-600 hover:text-gray-800"
+          class="w-8 h-8 self-end fill-current text-gray-800"
         />
         <icon-menu
           v-else
