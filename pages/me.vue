@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="text-3xl font-bold text-center">About me</h2>
-    <h3 class="text-2xl font-bold text-theme">Biography</h3>
+    <h3 class="mt-4 text-2xl font-bold text-theme">Biography</h3>
     <p class="mt-2">
       I am a software developer with 10+ years of experience using different
       technologies. During my career I've worked as a full-stack developer, both
@@ -21,8 +21,8 @@
     </p>
 
     <h3 class="mt-8 text-2xl font-bold text-theme">Work experience</h3>
-    <div class="relative mt-2 flex flex-col md:flex-row">
-      <div class="absolute self-end text-gray-600 md:w-48 md:static md:mt-0 md:self-start">2018 - Current</div>
+    <div class="mt-2 flex flex-col md:flex-row">
+      <div class="text-gray-600 md:w-48">2018 - Current</div>
       <div class="flex-1">
         <h3 class="font-semibold">Senior developer</h3>
         <p class="text-sm text-gray-600">FMIT Solutions - Málaga</p>
@@ -34,8 +34,8 @@
         </ul>
       </div>
     </div>
-    <div class="relative mt-4 flex flex-col md:flex-row">
-      <div class="absolute self-end text-gray-600 md:w-48 md:static md:mt-0 md:self-start">2016 - 2018</div>
+    <div class="mt-4 flex flex-col md:flex-row">
+      <div class="text-gray-600 md:w-48">2016 - 2018</div>
       <div class="flex-1">
         <h3 class="font-semibold">Senior Frontend Developer</h3>
         <p class="text-sm text-gray-600">Ibistic Technologies Spain – Málaga</p>
@@ -55,8 +55,8 @@
         </ul>
       </div>
     </div>
-    <div class="relative mt-4 flex flex-col md:flex-row">
-      <div class="absolute self-end text-gray-600 md:w-48 md:static md:mt-0 md:self-start">2007 - 2016</div>
+    <div class="mt-4 flex flex-col md:flex-row">
+      <div class="text-gray-600 md:w-48">2007 - 2016</div>
       <div class="flex-1">
         <h3 class="font-semibold">Senior Developer and Frontend Team Lead</h3>
         <p class="text-sm text-gray-600">CSC (Computer Science Corporation) - Málaga</p>
@@ -69,15 +69,15 @@
     </div>
 
     <h3 class="mt-8 text-2xl font-bold text-theme">Education</h3>
-    <div class="relative mt-2 flex flex-col md:flex-row">
-      <div class="absolute self-end text-gray-600 md:w-48 md:static md:mt-0 md:self-start">2016</div>
+    <div class="mt-2 flex flex-col md:flex-row">
+      <div class="text-gray-600 md:w-48">2016</div>
       <div class="flex-1">
         <h3 class="font-semibold">Master Web Engineering VI Edition - RIATec</h3>
         <p class="text-sm text-gray-600">Málaga University</p>
       </div>
     </div>
-    <div class="relative mt-4 flex flex-col md:flex-row">
-      <div class="absolute self-end text-gray-600 md:w-48 md:static md:mt-0 md:self-start">2005 - 2007</div>
+    <div class="mt-4 flex flex-col md:flex-row">
+      <div class="text-gray-600 md:w-48">2005 - 2007</div>
       <div class="flex-1">
         <h3 class="font-semibold">Certificate of Higher Education on Software Development</h3>
         <p class="text-sm text-gray-600">IES Politécnico Jesús Marín - Málaga</p>
@@ -85,27 +85,27 @@
     </div>
 
     <h3 class="mt-8 text-2xl font-bold text-theme">Additional training</h3>
-    <div class="relative mt-2 flex flex-col md:flex-row">
-      <div class="absolute self-end text-gray-600 text-right md:w-48 md:static md:mt-0 md:self-start md:text-left">Current</div>
+    <div class="mt-2 flex flex-col md:flex-row">
+      <div class="text-gray-600 md:w-48">Current</div>
       <div class="flex-1">
         <h3 class="font-semibold">Continuous training in online platforms and courses</h3>
         <p class="text-sm text-gray-600">Platzi – Egghead – VueMastery – VueSchool</p>
       </div>
     </div>
-    <div class="relative mt-2 flex flex-col md:flex-row">
-      <div class="absolute self-end text-gray-600 text-right md:w-48 md:static md:mt-0 md:self-start md:text-left">
+    <div class="mt-4 flex flex-col md:flex-row">
+      <div class="flex text-gray-600 md:w-48 md:flex-col">
         2014
-        <span class="text-sm block">(80 hours)</span>
+        <span class="ml-1 text-sm md:m-0">(80 hours)</span>
       </div>
       <div class="flex-1">
         <h3 class="font-semibold">AngularJS and Bootstrap course</h3>
         <p class="text-sm text-gray-600">HRCS - Málaga</p>
       </div>
     </div>
-    <div class="mt-2 flex flex-col md:flex-row">
-      <div class="absolute self-end text-gray-600 text-right md:w-48 md:static md:mt-0 md:self-start md:text-left">
+    <div class="mt-4 flex flex-col md:flex-row">
+      <div class="flex text-gray-600 md:w-48 md:flex-col">
         2006 - 2007
-        <span class="text-sm block">(620 hours)</span>
+        <span class="ml-1 text-sm md:m-0">(620 hours)</span>
       </div>
       <div class="flex-1">
         <h3 class="font-semibold">J2SE/J2EE Application Development</h3>
