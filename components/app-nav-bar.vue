@@ -11,7 +11,7 @@
       </li>
       <li>
         <nuxt-link
-          to="/"
+          to="/contact"
           class="mt-1 p-2 rounded block hover:bg-gray-200"
         >
           Contact

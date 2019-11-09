@@ -22,20 +22,14 @@
         class="lg:hidden"
         @click="showSidebar = !showSidebar"
       >
-        <svg
+        <icon-close
           v-if="showSidebar"
           class="w-8 h-8 self-end fill-current text-gray-600 hover:text-gray-800"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24">
-          <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
-        </svg>
-        <svg
+        />
+        <icon-menu
           v-else
           class="w-8 h-8 self-end fill-current text-gray-600 hover:text-gray-800"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24">
-          <path d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z"/>
-        </svg>
+        />
       </button>
     </div>
     <div class="lg:w-9/12 my-4 py-8 px-8 bg-white border border-gray-400 rounded">
@@ -46,10 +40,14 @@
 
 <script>
 import AppNavBar from '@/components/app-nav-bar.vue'
+import IconMenu from '@/components/icon-menu.vue'
+import IconClose from '@/components/icon-close.vue'
 
 export default {
   components: {
-    AppNavBar
+    AppNavBar,
+    IconMenu,
+    IconClose
   },
 
   data: () => ({

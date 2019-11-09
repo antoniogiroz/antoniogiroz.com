@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h2 class="text-3xl font-bold text-center">Full Stack Developer</h2>
-    <h2 class="text-2xl font-bold text-theme">Biography</h2>
-    <p class="mt-4">
+    <h2 class="text-3xl font-bold text-center">About me</h2>
+    <h3 class="text-2xl font-bold text-theme">Biography</h3>
+    <p class="mt-2">
       I am a software developer with 10+ years of experience using different
       technologies. During my career I've worked as a full-stack developer, both
       in the Frontend and in the Backend, although in the latest years I'm
@@ -20,9 +20,9 @@
       the most out of it.
     </p>
 
-    <h2 class="mt-8 text-2xl font-bold text-theme">Work experience</h2>
-    <div class="mt-4 flex">
-      <div class="w-32 lg:w-48 text-gray-600">2018 - Current</div>
+    <h3 class="mt-8 text-2xl font-bold text-theme">Work experience</h3>
+    <div class="relative mt-2 flex flex-col md:flex-row">
+      <div class="absolute self-end text-gray-600 md:w-48 md:static md:mt-0 md:self-start">2018 - Current</div>
       <div class="flex-1">
         <h3 class="font-semibold">Senior developer</h3>
         <p class="text-sm text-gray-600">FMIT Solutions - Málaga</p>
@@ -34,8 +34,8 @@
         </ul>
       </div>
     </div>
-    <div class="mt-4 flex">
-      <div class="w-32 lg:w-48 text-gray-600">2016 - 2018</div>
+    <div class="relative mt-4 flex flex-col md:flex-row">
+      <div class="absolute self-end text-gray-600 md:w-48 md:static md:mt-0 md:self-start">2016 - 2018</div>
       <div class="flex-1">
         <h3 class="font-semibold">Senior Frontend Developer</h3>
         <p class="text-sm text-gray-600">Ibistic Technologies Spain – Málaga</p>
@@ -55,8 +55,8 @@
         </ul>
       </div>
     </div>
-    <div class="mt-4 flex">
-      <div class="w-32 lg:w-48 text-gray-600">2007 - 2016</div>
+    <div class="relative mt-4 flex flex-col md:flex-row">
+      <div class="absolute self-end text-gray-600 md:w-48 md:static md:mt-0 md:self-start">2007 - 2016</div>
       <div class="flex-1">
         <h3 class="font-semibold">Senior Developer and Frontend Team Lead</h3>
         <p class="text-sm text-gray-600">CSC (Computer Science Corporation) - Málaga</p>
@@ -68,32 +68,32 @@
       </div>
     </div>
 
-    <h2 class="mt-8 text-2xl font-bold text-theme">Education</h2>
-    <div class="mt-4 flex">
-      <div class="w-32 lg:w-48 text-gray-600">2016</div>
+    <h3 class="mt-8 text-2xl font-bold text-theme">Education</h3>
+    <div class="relative mt-2 flex flex-col md:flex-row">
+      <div class="absolute self-end text-gray-600 md:w-48 md:static md:mt-0 md:self-start">2016</div>
       <div class="flex-1">
         <h3 class="font-semibold">Master Web Engineering VI Edition - RIATec</h3>
         <p class="text-sm text-gray-600">Málaga University</p>
       </div>
     </div>
-    <div class="mt-4 flex">
-      <div class="w-32 lg:w-48 text-gray-600">2005 - 2007</div>
+    <div class="relative mt-4 flex flex-col md:flex-row">
+      <div class="absolute self-end text-gray-600 md:w-48 md:static md:mt-0 md:self-start">2005 - 2007</div>
       <div class="flex-1">
         <h3 class="font-semibold">Certificate of Higher Education on Software Development</h3>
         <p class="text-sm text-gray-600">IES Politécnico Jesús Marín - Málaga</p>
       </div>
     </div>
 
-    <h2 class="mt-8 text-2xl font-bold text-theme">Additional training</h2>
-    <div class="mt-4 flex">
-      <div class="w-32 lg:w-48 text-gray-600">Current</div>
+    <h3 class="mt-8 text-2xl font-bold text-theme">Additional training</h3>
+    <div class="relative mt-2 flex flex-col md:flex-row">
+      <div class="absolute self-end text-gray-600 text-right md:w-48 md:static md:mt-0 md:self-start md:text-left">Current</div>
       <div class="flex-1">
         <h3 class="font-semibold">Continuous training in online platforms and courses</h3>
         <p class="text-sm text-gray-600">Platzi – Egghead – VueMastery – VueSchool</p>
       </div>
     </div>
-    <div class="mt-4 flex">
-      <div class="w-32 lg:w-48 text-gray-600">
+    <div class="relative mt-2 flex flex-col md:flex-row">
+      <div class="absolute self-end text-gray-600 text-right md:w-48 md:static md:mt-0 md:self-start md:text-left">
         2014
         <span class="text-sm block">(80 hours)</span>
       </div>
@@ -102,8 +102,8 @@
         <p class="text-sm text-gray-600">HRCS - Málaga</p>
       </div>
     </div>
-    <div class="mt-4 flex">
-      <div class="w-32 lg:w-48 text-gray-600">
+    <div class="mt-2 flex flex-col md:flex-row">
+      <div class="absolute self-end text-gray-600 text-right md:w-48 md:static md:mt-0 md:self-start md:text-left">
         2006 - 2007
         <span class="text-sm block">(620 hours)</span>
       </div>
@@ -114,8 +114,8 @@
     </div>
 
     <h3 class="mt-8 text-2xl font-bold text-theme">Professional skills</h3>
-    <div class="mt-4 flex justify-between">
-      <div class="w-1/2 pr-8 flex flex-col">
+    <div class="mt-2 flex flex-col justify-between md:flex-row">
+      <div class="flex flex-col md:w-1/2 md:pr-8">
         <div class="flex justify-between items-center">
           <p class="font-semibold">Javascript</p>
           <div class="flex">
@@ -197,7 +197,7 @@
           </div>
         </div>
       </div>
-      <div class="w-1/2 pr-8 flex flex-col">
+      <div class="flex flex-col md:w-1/2 md:pr-8">
         <div class="flex justify-between">
           <p>Android</p>
           <div class="flex">
@@ -271,18 +271,18 @@
       </div>
     </div>
 
-    <div class="mt-8 flex">
-      <div class="w-1/2">
+    <div class="mt-8 flex flex-col md:flex-row">
+      <div class="md:w-1/2">
         <h3 class="text-2xl font-bold text-theme">Personal qualities</h3>
-        <ul>
+        <ul class="mt-2">
           <li>Team work</li>
           <li>Attention to details</li>
           <li>Versatile</li>
         </ul>
       </div>
-      <div class="w-1/2">
+      <div class="mt-8 md:w-1/2 md:mt-0">
         <h3 class="text-2xl font-bold text-theme">Languages</h3>
-        <p><span class="font-semibold">English:</span> Basic spoken and fluent written</p>
+        <p class="mt-2"><span class="font-semibold">English:</span> Basic spoken and fluent written</p>
         <p><span class="font-semibold">Spanish:</span> Mother Tongue</p>
       </div>
     </div>
@@ -295,6 +295,10 @@ import IconStar from '@/components/icon-star.vue'
 export default {
   components: {
     IconStar
+  },
+
+  head: {
+    title: 'About me - Antonio Gil'
   }
 }
 </script>
