@@ -4,9 +4,9 @@
     <h3 class="mt-4 text-2xl font-bold text-brand">Biography</h3>
     <p class="mt-2">
       I am a software developer with 10+ years of experience using different
-      technologies. During my career I've worked as a full-stack developer, both
+      technologies. During my career, I've worked as a full-stack developer, both
       in the Frontend and in the Backend, although in the latest years I'm
-      focusing in Frontend architectures.
+      focusing on Frontend architectures.
     </p>
     <p class="mt-4">
       Paying attention to the detail to ensure that users always perceive the
@@ -16,7 +16,7 @@
     </p>
     <p class="mt-4">
       I believe that a close and productive collaboration between developers and
-      designers is the key to success, and I think I am the ideal person to take
+      designers is the key to success, and I think I am the ideal person to get
       the most out of it.
     </p>
 
@@ -290,7 +290,7 @@
 </template>
 
 <script>
-import IconStar from '@/components/icon-star.vue'
+import IconStar from '@/components/icons/icon-star.vue'
 
 export default {
   components: {

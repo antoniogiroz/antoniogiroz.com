@@ -1,14 +1,13 @@
 <template>
-  <div
-    class="h-full antialiased">
+  <div class="h-full antialiased">
     <div class="relative container mx-auto px-2 py-2 lg:py-8 lg:px-0 lg:flex">
-      <div class="bg-primary m-2 flex items-center justify-between lg:w-3/12 lg:min-w-64 lg:h-full lg:top-0 lg:sticky lg:bg-transparent lg:p-4 lg:flex lg:flex-col">
+      <div class="bg-primary m-2 flex items-center justify-between lg:w-3/12 lg:min-w-64 lg:h-full lg:top-0 lg:sticky lg:bg-transparent icons/lg:p-4 lg:flex lg:flex-col">
         <div class="flex items-center lg:flex-col lg:text-center">
-          <nuxt-link
-            to="/">
+          <nuxt-link to="/">
             <img
               class="w-16 border-2 border-white rounded-full shadow-md lg:w-24"
-              src="~/assets/images/avatar.jpg">
+              src="~/assets/images/avatar.jpg"
+            >
           </nuxt-link>
           <div class="flex flex-col ml-3 lg:m-0">
             <h1 class="text-2xl font-semibold leading-tight lg:mt-3">
@@ -18,14 +17,16 @@
             <p class="hidden lg:block lg:text-center text-brand">antonioluisgil@gmail.com</p>
           </div>
         </div>
-        <app-nav-bar
+        <app-sidebar
           :class="{'hidden': !showSidebar}"
-          @select="showSidebar = false" />
+          @select="showSidebar = false"
+        />
         <button
           v-show="showSidebar"
           class="fixed inset-0 h-full w-full bg-overlay opacity-25 cursor-default"
           tabindex="-1"
-          @click="showSidebar = !showSidebar" />
+          @click="showSidebar = !showSidebar"
+        />
 
         <button
           class="relative lg:hidden focus:outline-none"
@@ -49,13 +50,13 @@
 </template>
 
 <script>
-import AppNavBar from '@/components/app-nav-bar.vue'
-import IconMenu from '@/components/icon-menu.vue'
-import IconClose from '@/components/icon-close.vue'
+import AppSidebar from '@/components/sidebar/app-sidebar.vue'
+import IconMenu from '@/components/icons/icon-menu.vue'
+import IconClose from '@/components/icons/icon-close.vue'
 
 export default {
   components: {
-    AppNavBar,
+    AppSidebar,
     IconMenu,
     IconClose
   },
