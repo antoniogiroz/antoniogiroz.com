@@ -31,8 +31,8 @@ export default {
     return {
       socialLinks: [
         {
-          title: 'Twiiter',
-          link: 'https://twitter.com/antonioluisgil'
+          title: 'Twitter',
+          link: 'https://twitter.com/antoniogiroz',
         },
         {
           title: 'Github',
