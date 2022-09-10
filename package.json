@@ -11,6 +11,13 @@
   },
   "dependencies": {
     "@astrojs/netlify": "^1.0.2",
-    "astro": "^1.2.1"
+    "@fontsource/sora": "^4.5.10",
+    "astro": "^1.2.1",
+    "astro-icon": "^0.7.3"
+  },
+  "devDependencies": {
+    "@unocss/astro": "^0.45.18",
+    "sass": "^1.54.9",
+    "unocss": "^0.45.18"
   }
 }
