@@ -1,0 +1,20 @@
+---
+export interface Props {
+  href: string;
+  title?: string;
+  target?: '_self' | '_blank';
+  rel?: string;
+}
+
+const { href, title, target = '_self', rel = '' } = Astro.props;
+---
+
+<a
+  href={href}
+  title={title}
+  target={target}
+  rel={rel}
+  class="transition-colors duration-200 hover:text-theme-500 active:text-theme-500"
+>
+  <slot />
+</a>

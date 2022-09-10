@@ -1,0 +1,116 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import { Icon } from 'astro-icon';
+---
+
+<Layout title="Antonio Giroz | Software developer">
+  <Header />
+
+  <main class="flex flex-col mt-16 gap-16 items-center">
+    <div
+      class="flex flex-col text-center max-w-850px grid-flow-col gap-8 grid-cols-3 sm:flex sm:flex-col md:text-left md:grid"
+    >
+      <div class="rounded-full box relative self-center">
+        <img
+          src="/images/antonio-giroz.jpg"
+          alt="Antonio Giroz`s logo"
+          width="240px"
+          height="240px"
+          class="rounded-full h-180px w-180px md:h-200px md:w-200px lg:h-240px lg:w-240px"
+        />
+      </div>
+
+      <div class="flex flex-col gap-6 col-span-2">
+        <h2 class="text-4xl bold md:text-5xl">
+          Hello!
+          <Icon
+            name="emojione:waving-hand"
+            class="mt--4 w-48px inline-flex md:w-52px lg:w-64px"
+          />
+          <br />
+          I'm <span class="text-theme-500">Antonio Giroz</span>
+        </h2>
+        <h3 class="font-semibold text-l uppercase md:text-xl">
+          Software developer
+        </h3>
+        <p class="lg:text-lg">
+          I'm a software developer since 2007 and I'm currently working remotely
+          at FMIT as <strong>Frontend Team Lead</strong>. I love <strong
+            >Vue</strong
+          >, <strong>UI design</strong>, and focus on <strong>clean code</strong
+          > and <strong>suitable architectures</strong>.
+        </p>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <h3 class="text-sm text-gray-500 uppercase">Some tech I use</h3>
+      <div class="flex flex-wrap mt-8 gap-8 items-center justify-center">
+        <Icon
+          name="logos:javascript"
+          class="w-12"
+          title="Javascript"
+          alt="Javascript logo"
+        />
+        <Icon
+          name="logos:typescript-icon"
+          class="w-12"
+          title="Typescript"
+          alt="Typescript logo"
+        />
+        <Icon name="logos:vue" class="w-12" title="Vue" alt="Vue logo" />
+        <Icon name="logos:figma" class="h-12" title="Figma" alt="Figma logo" />
+        <Icon name="logos:vitejs" class="w-12" title="Vite" alt="Vite logo" />
+        <Icon name="logos:sass" class="w-12" title="Sass" alt="Sass logo" />
+        <Icon
+          name="logos:graphql"
+          class="w-12"
+          title="GraphQL"
+          alt="GraphQL logo"
+        />
+        <Icon
+          name="logos:wordpress-icon"
+          class="w-12"
+          title="Wordpress"
+          alt="Wordpress logo"
+        />
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style lang="scss">
+  .box::before {
+    content: '';
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(135deg, #4bc0cd 0%, #4cedf8 100%);
+    transform: translate3d(0px, 0px, 0) scale(0.8);
+    filter: blur(50px);
+    opacity: var(0.9);
+    transition: opacity 0.3s;
+    border-radius: inherit;
+  }
+
+  /* 
+  * Prevents issues when the parent creates a 
+  * stacking context. (For example, using the transform
+  * property )
+  */
+  .box::after {
+    content: '';
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: inherit;
+    border-radius: inherit;
+  }
+</style>
