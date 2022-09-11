@@ -1,6 +1,5 @@
 @import '@fontsource/sora/400.css';
 @import '@fontsource/sora/600.css';
-@import '@fontsource/sora/700.css';
 
 html {
   min-height: 100%;
@@ -13,4 +12,19 @@ body {
 
 p {
   line-height: 30px;
+}
+
+strong {
+  font-weight: 600;
+}
+
+@supports (font-variation-settings: normal) {
+  body {
+    font-family: 'Sora';
+    font-variation-settings: 'wght' 400;
+  }
+
+  strong {
+    font-variation-settings: 'wght' 600;
+  }
 }

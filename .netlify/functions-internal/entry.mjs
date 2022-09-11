@@ -1,6 +1,7 @@
 import * as adapter from '@astrojs/netlify/netlify-functions.js';
 import { escape } from 'html-escaper';
-/* empty css                        */import 'mime';
+/* empty css                        */import { optimize } from 'svgo';
+import 'mime';
 import 'kleur/colors';
 import 'string-width';
 import 'path-browserify';
@@ -1250,77 +1251,514 @@ var server_default = {
   renderToStaticMarkup
 };
 
-const $$metadata$2 = createMetadata("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/layouts/Layout.astro", { modules: [], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
-const $$Astro$2 = createAstro("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/layouts/Layout.astro", "", "file:///Users/agil/dev/projects/antoniogiroz.com/");
+const $$metadata$6 = createMetadata("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/layouts/Layout.astro", { modules: [], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
+const $$Astro$9 = createAstro("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/layouts/Layout.astro", "", "file:///Users/agil/dev/projects/antoniogiroz.com/");
 const $$Layout = createComponent(async ($$result, $$props, $$slots) => {
-  const Astro2 = $$result.createAstro($$Astro$2, $$props, $$slots);
+  const Astro2 = $$result.createAstro($$Astro$9, $$props, $$slots);
   Astro2.self = $$Layout;
   const { title } = Astro2.props;
-  const STYLES = [];
-  for (const STYLE of STYLES)
-    $$result.styles.add(STYLE);
-  return renderTemplate`<html lang="en" class="astro-4F7IZ3L5">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width">
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-		<meta name="generator"${addAttribute(Astro2.generator, "content")}>
-		<title>${title}</title>
-	${renderHead($$result)}</head>
-	<body class="astro-4F7IZ3L5">
-		${renderSlot($$result, $$slots["default"])}
-	
-
-
-</body></html>`;
+  return renderTemplate`<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="generator"${addAttribute(Astro2.generator, "content")}>
+    <title>${title}</title>
+  ${renderHead($$result)}</head>
+  <body class="container m-auto p-4 pb-8">
+    ${renderSlot($$result, $$slots["default"])}
+  </body></html>`;
 });
 
-const $$file$2 = "/Users/agil/dev/projects/antoniogiroz.com/src/layouts/Layout.astro";
+const $$file$6 = "/Users/agil/dev/projects/antoniogiroz.com/src/layouts/Layout.astro";
+const $$url$6 = undefined;
+
+const $$module1$4 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  $$metadata: $$metadata$6,
+  default: $$Layout,
+  file: $$file$6,
+  url: $$url$6
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const SPRITESHEET_NAMESPACE = `astroicon`;
+
+const $$module1$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  SPRITESHEET_NAMESPACE
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const $$module4 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const baseURL = "https://api.astroicon.dev/v1/";
+const requests = /* @__PURE__ */ new Map();
+const fetchCache = /* @__PURE__ */ new Map();
+async function get(pack, name) {
+  const url = new URL(`./${pack}/${name}`, baseURL).toString();
+  if (requests.has(url)) {
+    return await requests.get(url);
+  }
+  if (fetchCache.has(url)) {
+    return fetchCache.get(url);
+  }
+  let request = async () => {
+    const res = await fetch(url);
+    if (!res.ok) {
+      throw new Error(await res.text());
+    }
+    const contentType = res.headers.get("Content-Type");
+    if (!contentType.includes("svg")) {
+      throw new Error(`[astro-icon] Unable to load "${name}" because it did not resolve to an SVG!
+
+Recieved the following "Content-Type":
+${contentType}`);
+    }
+    const svg = await res.text();
+    fetchCache.set(url, svg);
+    requests.delete(url);
+    return svg;
+  };
+  let promise = request();
+  requests.set(url, promise);
+  return await promise;
+}
+
+const splitAttrsTokenizer = /([a-z0-9_\:\-]*)\s*?=\s*?(['"]?)(.*?)\2\s+/gim;
+const domParserTokenizer = /(?:<(\/?)([a-zA-Z][a-zA-Z0-9\:]*)(?:\s([^>]*?))?((?:\s*\/)?)>|(<\!\-\-)([\s\S]*?)(\-\->)|(<\!\[CDATA\[)([\s\S]*?)(\]\]>))/gm;
+const splitAttrs = (str) => {
+  let res = {};
+  let token;
+  if (str) {
+    splitAttrsTokenizer.lastIndex = 0;
+    str = " " + (str || "") + " ";
+    while (token = splitAttrsTokenizer.exec(str)) {
+      res[token[1]] = token[3];
+    }
+  }
+  return res;
+};
+function optimizeSvg(contents, name, options) {
+  return optimize(contents, {
+    plugins: [
+      "removeDoctype",
+      "removeXMLProcInst",
+      "removeComments",
+      "removeMetadata",
+      "removeXMLNS",
+      "removeEditorsNSData",
+      "cleanupAttrs",
+      "minifyStyles",
+      "convertStyleToAttrs",
+      {
+        name: "cleanupIDs",
+        params: { prefix: `${SPRITESHEET_NAMESPACE}:${name}` }
+      },
+      "removeRasterImages",
+      "removeUselessDefs",
+      "cleanupNumericValues",
+      "cleanupListOfValues",
+      "convertColors",
+      "removeUnknownsAndDefaults",
+      "removeNonInheritableGroupAttrs",
+      "removeUselessStrokeAndFill",
+      "removeViewBox",
+      "cleanupEnableBackground",
+      "removeHiddenElems",
+      "removeEmptyText",
+      "convertShapeToPath",
+      "moveElemsAttrsToGroup",
+      "moveGroupAttrsToElems",
+      "collapseGroups",
+      "convertPathData",
+      "convertTransform",
+      "removeEmptyAttrs",
+      "removeEmptyContainers",
+      "mergePaths",
+      "removeUnusedNS",
+      "sortAttrs",
+      "removeTitle",
+      "removeDesc",
+      "removeDimensions",
+      "removeStyleElement",
+      "removeScriptElement"
+    ]
+  }).data;
+}
+const preprocessCache = /* @__PURE__ */ new Map();
+function preprocess(contents, name, { optimize }) {
+  if (preprocessCache.has(contents)) {
+    return preprocessCache.get(contents);
+  }
+  if (optimize) {
+    contents = optimizeSvg(contents, name);
+  }
+  domParserTokenizer.lastIndex = 0;
+  let result = contents;
+  let token;
+  if (contents) {
+    while (token = domParserTokenizer.exec(contents)) {
+      const tag = token[2];
+      if (tag === "svg") {
+        const attrs = splitAttrs(token[3]);
+        result = contents.slice(domParserTokenizer.lastIndex).replace(/<\/svg>/gim, "").trim();
+        const value = { innerHTML: result, defaultProps: attrs };
+        preprocessCache.set(contents, value);
+        return value;
+      }
+    }
+  }
+}
+function normalizeProps(inputProps) {
+  const size = inputProps.size;
+  delete inputProps.size;
+  const w = inputProps.width ?? size;
+  const h = inputProps.height ?? size;
+  const width = w ? toAttributeSize(w) : void 0;
+  const height = h ? toAttributeSize(h) : void 0;
+  return { ...inputProps, width, height };
+}
+const toAttributeSize = (size) => String(size).replace(/(?<=[0-9])x$/, "em");
+const fallback = {
+  innerHTML: '<rect width="24" height="24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />',
+  props: {
+    xmlns: "http://www.w3.org/2000/svg",
+    fill: "none",
+    viewBox: "0 0 24 24",
+    stroke: "currentColor",
+    "aria-hidden": "true"
+  }
+};
+async function load(name, inputProps, optimize) {
+  const key = name;
+  if (!name) {
+    throw new Error("<Icon> requires a name!");
+  }
+  let svg = "";
+  let filepath = "";
+  if (name.includes(":")) {
+    const [pack, ..._name] = name.split(":");
+    name = _name.join(":");
+    filepath = `/src/icons/${pack}`;
+    let get$1;
+    try {
+      const files = /* #__PURE__ */ Object.assign({});
+      const keys = Object.fromEntries(
+        Object.keys(files).map((key2) => [key2.replace(/\.[cm]?[jt]s$/, ""), key2])
+      );
+      if (!(filepath in keys)) {
+        throw new Error(`Could not find the file "${filepath}"`);
+      }
+      const mod = files[keys[filepath]];
+      if (typeof mod.default !== "function") {
+        throw new Error(
+          `[astro-icon] "${filepath}" did not export a default function!`
+        );
+      }
+      get$1 = mod.default;
+    } catch (e) {
+    }
+    if (typeof get$1 === "undefined") {
+      get$1 = get.bind(null, pack);
+    }
+    const contents = await get$1(name);
+    if (!contents) {
+      throw new Error(
+        `<Icon pack="${pack}" name="${name}" /> did not return an icon!`
+      );
+    }
+    if (!/<svg/gim.test(contents)) {
+      throw new Error(
+        `Unable to process "<Icon pack="${pack}" name="${name}" />" because an SVG string was not returned!
+
+Recieved the following content:
+${contents}`
+      );
+    }
+    svg = contents;
+  } else {
+    filepath = `/src/icons/${name}.svg`;
+    try {
+      const files = /* #__PURE__ */ Object.assign({});
+      if (!(filepath in files)) {
+        throw new Error(`Could not find the file "${filepath}"`);
+      }
+      const contents = files[filepath];
+      if (!/<svg/gim.test(contents)) {
+        throw new Error(
+          `Unable to process "${filepath}" because it is not an SVG!
+
+Recieved the following content:
+${contents}`
+        );
+      }
+      svg = contents;
+    } catch (e) {
+      throw new Error(
+        `[astro-icon] Unable to load "${filepath}". Does the file exist?`
+      );
+    }
+  }
+  const { innerHTML, defaultProps } = preprocess(svg, key, { optimize });
+  if (!innerHTML.trim()) {
+    throw new Error(`Unable to parse "${filepath}"!`);
+  }
+  return {
+    innerHTML,
+    props: { ...defaultProps, ...normalizeProps(inputProps) }
+  };
+}
+
+const $$module2$2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  preprocess,
+  normalizeProps,
+  fallback,
+  default: load
+}, Symbol.toStringTag, { value: 'Module' }));
+
+createMetadata("/@fs/Users/agil/dev/projects/antoniogiroz.com/node_modules/astro-icon/lib/Icon.astro", { modules: [{ module: $$module2$2, specifier: "./utils.ts", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
+const $$Astro$8 = createAstro("/@fs/Users/agil/dev/projects/antoniogiroz.com/node_modules/astro-icon/lib/Icon.astro", "", "file:///Users/agil/dev/projects/antoniogiroz.com/");
+const $$Icon = createComponent(async ($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$Astro$8, $$props, $$slots);
+  Astro2.self = $$Icon;
+  let { name, pack, title, optimize = true, class: className, ...inputProps } = Astro2.props;
+  let props = {};
+  if (pack) {
+    name = `${pack}:${name}`;
+  }
+  let innerHTML = "";
+  try {
+    const svg = await load(name, { ...inputProps, class: className }, optimize);
+    innerHTML = svg.innerHTML;
+    props = svg.props;
+  } catch (e) {
+    if ((Object.assign({"BASE_URL":"/","MODE":"production","DEV":false,"PROD":true},{_:process.env._,})).MODE === "production") {
+      throw new Error(`[astro-icon] Unable to load icon "${name}"!
+${e}`);
+    }
+    innerHTML = fallback.innerHTML;
+    props = { ...fallback.props, ...normalizeProps(inputProps) };
+    title = `Failed to load "${name}"!`;
+    console.error(e);
+  }
+  return renderTemplate`${maybeRenderHead($$result)}<svg${spreadAttributes(props)}${addAttribute(name, "astro-icon")}>${markHTMLString((title ? `<title>${title}</title>` : "") + innerHTML)}</svg>`;
+});
+
+const AstroIcon = Symbol("AstroIcon");
+function trackSprite(result, name) {
+  if (typeof result[AstroIcon] !== "undefined") {
+    result[AstroIcon]["sprites"].add(name);
+  } else {
+    result[AstroIcon] = {
+      sprites: /* @__PURE__ */ new Set([name])
+    };
+  }
+}
+const warned = /* @__PURE__ */ new Set();
+async function getUsedSprites(result) {
+  if (typeof result[AstroIcon] !== "undefined") {
+    return Array.from(result[AstroIcon]["sprites"]);
+  }
+  const pathname = result._metadata.pathname;
+  if (!warned.has(pathname)) {
+    console.log(`[astro-icon] No sprites found while rendering "${pathname}"`);
+    warned.add(pathname);
+  }
+  return [];
+}
+
+const $$module3$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  trackSprite,
+  getUsedSprites
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const $$metadata$5 = createMetadata("/@fs/Users/agil/dev/projects/antoniogiroz.com/node_modules/astro-icon/lib/Spritesheet.astro", { modules: [{ module: $$module1$3, specifier: "./constants", assert: {} }, { module: $$module2$2, specifier: "./utils.ts", assert: {} }, { module: $$module3$1, specifier: "./context.ts", assert: {} }, { module: $$module4, specifier: "./Props.ts", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
+const $$Astro$7 = createAstro("/@fs/Users/agil/dev/projects/antoniogiroz.com/node_modules/astro-icon/lib/Spritesheet.astro", "", "file:///Users/agil/dev/projects/antoniogiroz.com/");
+const $$Spritesheet = createComponent(async ($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$Astro$7, $$props, $$slots);
+  Astro2.self = $$Spritesheet;
+  const { optimize = true, style, ...props } = Astro2.props;
+  const names = await getUsedSprites($$result);
+  const icons = await Promise.all(names.map((name) => {
+    return load(name, {}, optimize).then((res) => ({ ...res, name })).catch((e) => {
+      if ((Object.assign({"BASE_URL":"/","MODE":"production","DEV":false,"PROD":true},{_:process.env._,})).MODE === "production") {
+        throw new Error(`[astro-icon] Unable to load icon "${name}"!
+${e}`);
+      }
+      return { ...fallback, name };
+    });
+  }));
+  return renderTemplate`${maybeRenderHead($$result)}<svg${addAttribute(`display: none; ${style ?? ""}`.trim(), "style")}${spreadAttributes({ "aria-hidden": true, ...props })} astro-icon-spritesheet>
+    ${icons.map((icon) => renderTemplate`<symbol${spreadAttributes(icon.props)}${addAttribute(`${SPRITESHEET_NAMESPACE}:${icon.name}`, "id")}>${markHTMLString(icon.innerHTML)}</symbol>`)}
+</svg>`;
+});
+
+const $$file$5 = "/Users/agil/dev/projects/antoniogiroz.com/node_modules/astro-icon/lib/Spritesheet.astro";
+const $$url$5 = undefined;
+
+const $$module1$2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  $$metadata: $$metadata$5,
+  default: $$Spritesheet,
+  file: $$file$5,
+  url: $$url$5
+}, Symbol.toStringTag, { value: 'Module' }));
+
+createMetadata("/@fs/Users/agil/dev/projects/antoniogiroz.com/node_modules/astro-icon/lib/SpriteProvider.astro", { modules: [{ module: $$module1$2, specifier: "./Spritesheet.astro", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
+const $$Astro$6 = createAstro("/@fs/Users/agil/dev/projects/antoniogiroz.com/node_modules/astro-icon/lib/SpriteProvider.astro", "", "file:///Users/agil/dev/projects/antoniogiroz.com/");
+const $$SpriteProvider = createComponent(async ($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$Astro$6, $$props, $$slots);
+  Astro2.self = $$SpriteProvider;
+  const content = await Astro2.slots.render("default");
+  return renderTemplate`${renderComponent($$result, "Fragment", Fragment, {}, { "default": () => renderTemplate`${markHTMLString(content)}` })}
+${renderComponent($$result, "Spritesheet", $$Spritesheet, {})}
+`;
+});
+
+createMetadata("/@fs/Users/agil/dev/projects/antoniogiroz.com/node_modules/astro-icon/lib/Sprite.astro", { modules: [{ module: $$module1$3, specifier: "./constants", assert: {} }, { module: $$module2$2, specifier: "./utils.ts", assert: {} }, { module: $$module3$1, specifier: "./context.ts", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
+const $$Astro$5 = createAstro("/@fs/Users/agil/dev/projects/antoniogiroz.com/node_modules/astro-icon/lib/Sprite.astro", "", "file:///Users/agil/dev/projects/antoniogiroz.com/");
+const $$Sprite = createComponent(async ($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$Astro$5, $$props, $$slots);
+  Astro2.self = $$Sprite;
+  let { name, pack, title, class: className, x, y, ...inputProps } = Astro2.props;
+  const props = normalizeProps(inputProps);
+  if (pack) {
+    name = `${pack}:${name}`;
+  }
+  const href = `#${SPRITESHEET_NAMESPACE}:${name}`;
+  trackSprite($$result, name);
+  return renderTemplate`${maybeRenderHead($$result)}<svg${spreadAttributes(props)}${addAttribute(className, "class")}${addAttribute(name, "astro-icon")}>
+    ${title ? renderTemplate`<title>${title}</title>` : ""}
+    <use${spreadAttributes({ "xlink:href": href, width: props.width, height: props.height, x, y })}></use>
+</svg>`;
+});
+
+const deprecate = (component, message) => {
+  return (...args) => {
+    console.warn(message);
+    return component(...args);
+  };
+};
+const Spritesheet = deprecate(
+  $$Spritesheet,
+  `Direct access to <Spritesheet /> has been deprecated! Please wrap your contents in <Sprite.Provider> instead!`
+);
+const SpriteSheet = deprecate(
+  $$Spritesheet,
+  `Direct access to <SpriteSheet /> has been deprecated! Please wrap your contents in <Sprite.Provider> instead!`
+);
+const Sprite = Object.assign($$Sprite, { Provider: $$SpriteProvider });
+
+const $$module3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: $$Icon,
+  Icon: $$Icon,
+  Spritesheet,
+  SpriteSheet,
+  SpriteProvider: $$SpriteProvider,
+  Sprite
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const $$metadata$4 = createMetadata("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/components/Link.astro", { modules: [], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
+const $$Astro$4 = createAstro("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/components/Link.astro", "", "file:///Users/agil/dev/projects/antoniogiroz.com/");
+const $$Link = createComponent(async ($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$Astro$4, $$props, $$slots);
+  Astro2.self = $$Link;
+  const { href, title, target = "_self", rel = "" } = Astro2.props;
+  return renderTemplate`${maybeRenderHead($$result)}<a${addAttribute(href, "href")}${addAttribute(title, "title")}${addAttribute(target, "target")}${addAttribute(rel, "rel")} class="transition-colors duration-200 hover:text-theme-500 active:text-theme-500">
+  ${renderSlot($$result, $$slots["default"])}
+</a>`;
+});
+
+const $$file$4 = "/Users/agil/dev/projects/antoniogiroz.com/src/components/Link.astro";
+const $$url$4 = undefined;
+
+const $$module2$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  $$metadata: $$metadata$4,
+  default: $$Link,
+  file: $$file$4,
+  url: $$url$4
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const $$metadata$3 = createMetadata("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/components/SocialIconLink.astro", { modules: [{ module: $$module3, specifier: "astro-icon", assert: {} }, { module: $$module2$1, specifier: "./Link.astro", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
+const $$Astro$3 = createAstro("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/components/SocialIconLink.astro", "", "file:///Users/agil/dev/projects/antoniogiroz.com/");
+const $$SocialIconLink = createComponent(async ($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$Astro$3, $$props, $$slots);
+  Astro2.self = $$SocialIconLink;
+  const { href, icon } = Astro2.props;
+  return renderTemplate`${renderComponent($$result, "Link", $$Link, { "href": href, "target": "_blank", "rel": "noreferrer" }, { "default": () => renderTemplate`${renderComponent($$result, "Icon", $$Icon, { "name": icon, "class": "transition-colors text-gray-500 w-8 duration-200 hover:text-theme-500" })}` })}`;
+});
+
+const $$file$3 = "/Users/agil/dev/projects/antoniogiroz.com/src/components/SocialIconLink.astro";
+const $$url$3 = undefined;
+
+const $$module1$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  $$metadata: $$metadata$3,
+  default: $$SocialIconLink,
+  file: $$file$3,
+  url: $$url$3
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const $$metadata$2 = createMetadata("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/components/SocialIcons.astro", { modules: [{ module: $$module1$1, specifier: "../components/SocialIconLink.astro", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
+const $$Astro$2 = createAstro("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/components/SocialIcons.astro", "", "file:///Users/agil/dev/projects/antoniogiroz.com/");
+const $$SocialIcons = createComponent(async ($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$Astro$2, $$props, $$slots);
+  Astro2.self = $$SocialIcons;
+  return renderTemplate`${maybeRenderHead($$result)}<ul class="flex gap-2">
+  <li>
+    ${renderComponent($$result, "SocialIconLink", $$SocialIconLink, { "href": "https://twitter.com/antoniogiroz", "icon": "ph:twitter-logo-duotone" })}
+  </li>
+  <li>
+    ${renderComponent($$result, "SocialIconLink", $$SocialIconLink, { "href": "https://github.com/algil", "icon": "ph:github-logo-duotone" })}
+  </li>
+  <li>
+    ${renderComponent($$result, "SocialIconLink", $$SocialIconLink, { "href": "https://www.linkedin.com/in/antonioluisgil", "icon": "ph:linkedin-logo-duotone" })}
+  </li>
+</ul>`;
+});
+
+const $$file$2 = "/Users/agil/dev/projects/antoniogiroz.com/src/components/SocialIcons.astro";
 const $$url$2 = undefined;
 
 const $$module1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   $$metadata: $$metadata$2,
-  default: $$Layout,
+  default: $$SocialIcons,
   file: $$file$2,
   url: $$url$2
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const $$metadata$1 = createMetadata("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/components/Card.astro", { modules: [], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
-const $$Astro$1 = createAstro("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/components/Card.astro", "", "file:///Users/agil/dev/projects/antoniogiroz.com/");
-const $$Card = createComponent(async ($$result, $$props, $$slots) => {
+const $$metadata$1 = createMetadata("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/components/Header.astro", { modules: [{ module: $$module1, specifier: "../components/SocialIcons.astro", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
+const $$Astro$1 = createAstro("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/components/Header.astro", "", "file:///Users/agil/dev/projects/antoniogiroz.com/");
+const $$Header = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro$1, $$props, $$slots);
-  Astro2.self = $$Card;
-  const { href, title, body } = Astro2.props;
-  const STYLES = [];
-  for (const STYLE of STYLES)
-    $$result.styles.add(STYLE);
-  return renderTemplate`${maybeRenderHead($$result)}<li class="link-card astro-FVYHKR4O">
-	<a${addAttribute(href, "href")} class="astro-FVYHKR4O">
-		<h2 class="astro-FVYHKR4O">
-			${title}
-			<span class="astro-FVYHKR4O">&rarr;</span>
-		</h2>
-		<p class="astro-FVYHKR4O">
-			${body}
-		</p>
-	</a>
-</li>
-`;
+  Astro2.self = $$Header;
+  return renderTemplate`${maybeRenderHead($$result)}<header class="flex py-4 justify-between items-center">
+  <div></div>
+  ${renderComponent($$result, "SocialIcons", $$SocialIcons, {})}
+</header>`;
 });
 
-const $$file$1 = "/Users/agil/dev/projects/antoniogiroz.com/src/components/Card.astro";
+const $$file$1 = "/Users/agil/dev/projects/antoniogiroz.com/src/components/Header.astro";
 const $$url$1 = undefined;
 
 const $$module2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   $$metadata: $$metadata$1,
-  default: $$Card,
+  default: $$Header,
   file: $$file$1,
   url: $$url$1
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const $$metadata = createMetadata("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/pages/index.astro", { modules: [{ module: $$module1, specifier: "../layouts/Layout.astro", assert: {} }, { module: $$module2, specifier: "../components/Card.astro", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
+const $$metadata = createMetadata("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/pages/index.astro", { modules: [{ module: $$module1$4, specifier: "../layouts/Layout.astro", assert: {} }, { module: $$module2, specifier: "../components/Header.astro", assert: {} }, { module: $$module3, specifier: "astro-icon", assert: {} }], hydratedComponents: [], clientOnlyComponents: [], hydrationDirectives: /* @__PURE__ */ new Set([]), hoisted: [] });
 const $$Astro = createAstro("/@fs/Users/agil/dev/projects/antoniogiroz.com/src/pages/index.astro", "", "file:///Users/agil/dev/projects/antoniogiroz.com/");
 const $$Index = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
@@ -1328,19 +1766,43 @@ const $$Index = createComponent(async ($$result, $$props, $$slots) => {
   const STYLES = [];
   for (const STYLE of STYLES)
     $$result.styles.add(STYLE);
-  return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "Welcome to Astro.", "class": "astro-VE4FWYIY" }, { "default": () => renderTemplate`${maybeRenderHead($$result)}<main class="astro-VE4FWYIY">
-		<h1 class="astro-VE4FWYIY">Welcome to <span class="text-gradient astro-VE4FWYIY">Astro</span></h1>
-		<p class="instructions astro-VE4FWYIY">
-			Check out the <code class="astro-VE4FWYIY">src/pages</code> directory to get started.<br class="astro-VE4FWYIY">
-			<strong class="astro-VE4FWYIY">Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
-		</p>
-		<ul role="list" class="link-card-grid astro-VE4FWYIY">
-			${renderComponent($$result, "Card", $$Card, { "href": "https://docs.astro.build/", "title": "Documentation", "body": "Learn how Astro works and explore the official API docs.", "class": "astro-VE4FWYIY" })}
-			${renderComponent($$result, "Card", $$Card, { "href": "https://astro.build/integrations/", "title": "Integrations", "body": "Supercharge your project with new frameworks and libraries.", "class": "astro-VE4FWYIY" })}
-			${renderComponent($$result, "Card", $$Card, { "href": "https://astro.build/themes/", "title": "Themes", "body": "Explore a galaxy of community-built starter themes.", "class": "astro-VE4FWYIY" })}
-			${renderComponent($$result, "Card", $$Card, { "href": "https://astro.build/chat/", "title": "Chat", "body": "Come say hi to our amazing Discord community. \u2764\uFE0F", "class": "astro-VE4FWYIY" })}
-		</ul>
-	</main>` })}
+  return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "Antonio Giroz | Software developer", "class": "astro-25TYF53T" }, { "default": () => renderTemplate`${renderComponent($$result, "Header", $$Header, { "class": "astro-25TYF53T" })}${maybeRenderHead($$result)}<main class="flex flex-col mt-16 gap-16 items-center astro-25TYF53T">
+    <div class="flex flex-col text-center max-w-850px grid-flow-col gap-8 grid-cols-3 sm:flex sm:flex-col md:text-left md:grid astro-25TYF53T">
+      <div class="rounded-full box relative self-center astro-25TYF53T">
+        <img src="/images/antonio-giroz.jpg" alt="Antonio Giroz\`s logo" width="240px" height="240px" class="rounded-full h-180px w-180px md:h-200px md:w-200px lg:h-240px lg:w-240px astro-25TYF53T">
+      </div>
+
+      <div class="flex flex-col gap-6 col-span-2 astro-25TYF53T">
+        <h2 class="text-4xl bold md:text-5xl astro-25TYF53T">
+          Hello!
+          ${renderComponent($$result, "Icon", $$Icon, { "name": "emojione:waving-hand", "class": "mt--4 w-48px inline-flex md:w-52px lg:w-64px astro-25TYF53T" })}
+          <br class="astro-25TYF53T">
+          I'm <span class="text-theme-500 astro-25TYF53T">Antonio Giroz</span>
+        </h2>
+        <h3 class="font-semibold text-l uppercase md:text-xl astro-25TYF53T">
+          Software developer
+        </h3>
+        <p class="lg:text-lg astro-25TYF53T">
+          I'm a software developer since 2007 and I'm currently working remotely
+          at FMIT as <strong class="astro-25TYF53T">Frontend Team Lead</strong>. I love <strong class="astro-25TYF53T">Vue</strong>, <strong class="astro-25TYF53T">UI design</strong>, and focus on <strong class="astro-25TYF53T">clean code</strong> and <strong class="astro-25TYF53T">suitable architectures</strong>.
+        </p>
+      </div>
+    </div>
+
+    <div class="text-center astro-25TYF53T">
+      <h3 class="text-sm text-gray-500 uppercase astro-25TYF53T">Some tech I use</h3>
+      <div class="flex flex-wrap mt-8 gap-8 items-center justify-center astro-25TYF53T">
+        ${renderComponent($$result, "Icon", $$Icon, { "name": "logos:javascript", "class": "w-12 astro-25TYF53T", "title": "Javascript", "alt": "Javascript logo" })}
+        ${renderComponent($$result, "Icon", $$Icon, { "name": "logos:typescript-icon", "class": "w-12 astro-25TYF53T", "title": "Typescript", "alt": "Typescript logo" })}
+        ${renderComponent($$result, "Icon", $$Icon, { "name": "logos:vue", "class": "w-12 astro-25TYF53T", "title": "Vue", "alt": "Vue logo" })}
+        ${renderComponent($$result, "Icon", $$Icon, { "name": "logos:figma", "class": "h-12 astro-25TYF53T", "title": "Figma", "alt": "Figma logo" })}
+        ${renderComponent($$result, "Icon", $$Icon, { "name": "logos:vitejs", "class": "w-12 astro-25TYF53T", "title": "Vite", "alt": "Vite logo" })}
+        ${renderComponent($$result, "Icon", $$Icon, { "name": "logos:sass", "class": "w-12 astro-25TYF53T", "title": "Sass", "alt": "Sass logo" })}
+        ${renderComponent($$result, "Icon", $$Icon, { "name": "logos:graphql", "class": "w-12 astro-25TYF53T", "title": "GraphQL", "alt": "GraphQL logo" })}
+        ${renderComponent($$result, "Icon", $$Icon, { "name": "logos:wordpress-icon", "class": "w-12 astro-25TYF53T", "title": "Wordpress", "alt": "Wordpress logo" })}
+      </div>
+    </div>
+  </main>` })}
 
 `;
 });
@@ -1428,7 +1890,7 @@ function deserializeManifest(serializedManifest) {
   };
 }
 
-const _manifest = Object.assign(deserializeManifest({"adapterName":"@astrojs/netlify/functions","routes":[{"file":"","links":["assets/index.6b646dd9.css"],"scripts":[],"routeData":{"route":"/","type":"page","pattern":"^\\/$","segments":[],"params":[],"component":"src/pages/index.astro","pathname":"/","_meta":{"trailingSlash":"ignore"}}}],"base":"/","markdown":{"drafts":false,"syntaxHighlight":"shiki","shikiConfig":{"langs":[],"theme":"github-dark","wrap":false},"remarkPlugins":[],"rehypePlugins":[],"remarkRehype":{},"extendDefaultPlugins":false,"isAstroFlavoredMd":false},"pageMap":null,"renderers":[],"entryModules":{"\u0000@astrojs-ssr-virtual-entry":"entry.mjs","astro:scripts/before-hydration.js":"data:text/javascript;charset=utf-8,//[no before-hydration script]"},"assets":["/assets/index.6b646dd9.css","/favicon.svg"]}), {
+const _manifest = Object.assign(deserializeManifest({"adapterName":"@astrojs/netlify/functions","routes":[{"file":"","links":["assets/index.b955ce6b.css"],"scripts":[],"routeData":{"route":"/","type":"page","pattern":"^\\/$","segments":[],"params":[],"component":"src/pages/index.astro","pathname":"/","_meta":{"trailingSlash":"ignore"}}}],"base":"/","markdown":{"drafts":false,"syntaxHighlight":"shiki","shikiConfig":{"langs":[],"theme":"github-dark","wrap":false},"remarkPlugins":[],"rehypePlugins":[],"remarkRehype":{},"extendDefaultPlugins":false,"isAstroFlavoredMd":false},"pageMap":null,"renderers":[],"entryModules":{"\u0000@astrojs-ssr-virtual-entry":"entry.mjs","astro:scripts/before-hydration.js":"data:text/javascript;charset=utf-8,//[no before-hydration script]"},"assets":["/assets/sora-latin-400-normal.3fc0e572.woff2","/assets/sora-latin-ext-700-normal.dee6edc5.woff2","/assets/sora-latin-ext-600-normal.d04f3761.woff2","/assets/sora-latin-600-normal.fe5ef3d7.woff2","/assets/sora-latin-ext-400-normal.db65cdf3.woff2","/assets/sora-latin-700-normal.fa4ba064.woff2","/assets/sora-all-400-normal.625d3e27.woff","/assets/sora-all-700-normal.8246c44f.woff","/assets/sora-all-600-normal.c9edc629.woff","/assets/index.b955ce6b.css","/android-chrome-192x192.png","/android-chrome-512x512.png","/apple-touch-icon.png","/favicon-16x16.png","/favicon-32x32.png","/favicon.ico","/site.webmanifest","/images/antonio-giroz.jpg","/images/antonio-giroz.png","/images/antonio-giroz.webp"]}), {
 	pageMap: pageMap,
 	renderers: renderers
 });
