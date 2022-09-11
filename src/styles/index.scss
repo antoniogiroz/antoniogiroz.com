@@ -1,13 +1,9 @@
 @import '@fontsource/sora/400.css';
 @import '@fontsource/sora/600.css';
 
-html {
-  min-height: 100%;
-}
-
 body {
   font-family: 'Sora', sans-serif;
-  background: linear-gradient(180deg, #f8fafb 0%, #e6f3f5 100%) no-repeat;
+  background: #f8fafb linear-gradient(180deg, #e6f3f5 0%, #f8fafb 100%) no-repeat;
 }
 
 p {
