@@ -1,5 +1,6 @@
 ---
 import { Icon } from 'astro-icon';
+import Footer from '../components/Footer.astro';
 import '../styles/index.css';
 
 export interface Props {
@@ -10,7 +11,7 @@ const { title } = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="en" class="antialiased">
+<html lang="en" class="antialiased text-slate-700">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -23,10 +24,6 @@ const { title } = Astro.props;
   </head>
   <body class="flex flex-col">
     <slot />
-
-    <p class="flex mt-12 mb-4 text-gray-500 static justify-center items-center md:m-0 md:right-4 md:bottom-4 md:fixed lg:bg-transparent">
-      Built with
-      <Icon class="h-24px ml-2 fill-gray-500 inline-flex" name="astro" />
-    </p>
+    <Footer />
   </body>
 </html>

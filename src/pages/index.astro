@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 import { Icon } from 'astro-icon';
 ---
 
@@ -8,10 +9,13 @@ import { Icon } from 'astro-icon';
   <div class="flex flex-col flex-1 px-4 justify-center items-center">
     <Header />
 
-    <main class="flex flex-col flex-1 mt-12 items-center justify-center md:mt-36 lg:max-w-4xl">
+    <main
+      class="flex flex-col flex-1 mt-12 items-center justify-center md:mt-36 lg:max-w-5xl"
+    >
       <div
-        class="text-center grid-flow-row grid gap-8 justify-items-center md:text-left md:grid-cols-3 lg:gap-16"
+        class="text-center grid-flow-row grid gap-8 justify-items-center md:text-left md:grid-cols-3 lg:gap-8"
       >
+        <div class="rounded-full relative">
         <div class="rounded-full box relative">
           <img
             src="/images/antonio-giroz.jpg"
@@ -21,7 +25,8 @@ import { Icon } from 'astro-icon';
             class="rounded-full h-180px mb-4 w-180px md:h-200px md:w-200px lg:h-240px lg:w-240px"
           />
         </div>
-  
+        </div>
+
         <div class="flex flex-col gap-6 md:col-span-2">
           <h1 class="text-4xl bold md:text-5xl">
             Hello!
@@ -33,15 +38,16 @@ import { Icon } from 'astro-icon';
             I'm <strong class="text-theme-500">Antonio Giroz</strong>
           </h1>
           <h2 class="text-l uppercase md:text-xl">
-            <strong>Software developer</strong>
+            <strong>Frontend Team Lead</strong>
           </h2>
           <p class="lg:text-lg">
-            I'm a software developer since 2007 and I'm currently working remotely
-            at FMIT as <strong>Frontend Team Lead</strong>. I love Vue, UI design, and focus on clean code and suitable architectures.
+            I have been a software developer since 2007 and work remotely as a
+            <strong>Frontend Team Lead</strong> at FMIT. I'm passionate about Vue, UI design, and
+            committed to clean code and suitable architectures.
           </p>
         </div>
       </div>
-  
+
       <div class="mt-8 text-center lg:mt-28">
         <h3 class="text-sm text-gray-500 uppercase">Some tech I use</h3>
         <div class="flex flex-wrap mt-8 gap-8 items-center justify-center">
@@ -58,8 +64,19 @@ import { Icon } from 'astro-icon';
             alt="Typescript logo"
           />
           <Icon name="logos:vue" class="w-12" title="Vue" alt="Vue logo" />
-          <Icon name="logos:figma" class="h-12" title="Figma" alt="Figma logo" />
+          <Icon
+            name="logos:figma"
+            class="h-12"
+            title="Figma"
+            alt="Figma logo"
+          />
           <Icon name="logos:vitejs" class="w-12" title="Vite" alt="Vite logo" />
+          <Icon
+            name="logos:postcss"
+            class="w-12"
+            title="Postcss"
+            alt="Postcss logo"
+          />
           <Icon name="logos:sass" class="w-12" title="Sass" alt="Sass logo" />
           <Icon
             name="logos:graphql"
@@ -77,8 +94,6 @@ import { Icon } from 'astro-icon';
       </div>
     </main>
   </div>
-
-  
 </Layout>
 
 <style>
@@ -91,7 +106,7 @@ import { Icon } from 'astro-icon';
     bottom: 0;
     left: 0;
     background: linear-gradient(135deg, #4bc0cd 0%, #4cedf8 100%);
-    transform: translate3d(0px, 0px, 0) scale(.9);
+    transform: translate3d(0px, 0px, 0);
     filter: blur(50px);
     opacity: var(0.9);
     transition: opacity 0.3s;
