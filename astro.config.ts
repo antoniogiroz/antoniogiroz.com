@@ -11,9 +11,4 @@ export default defineConfig({
       injectReset: true
     }),
   ],
-  vite: {
-    ssr: {
-      external: ['svgo'],
-    },
-  },
 });
