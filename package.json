@@ -10,14 +10,17 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/netlify": "^1.0.2",
-    "@fontsource/sora": "^4.5.10",
-    "astro": "^1.2.1",
-    "astro-icon": "^0.7.3"
+    "@astrojs/netlify": "^2.2.1",
+    "@fontsource/sora": "^4.5.12",
+    "astro": "^2.2.1",
+    "astro-icon": "^0.8.0"
   },
   "devDependencies": {
-    "@unocss/astro": "^0.45.18",
-    "sass": "^1.54.9",
-    "unocss": "^0.45.18"
+    "@unocss/astro": "^0.50.8",
+    "@unocss/reset": "^0.50.8",
+    "postcss": "^8.4.21",
+    "postcss-preset-env": "^8.3.0",
+    "unocss": "^0.50.8",
+    "vite": "^4.2.1"
   }
 }
