@@ -1,5 +1,5 @@
 ---
-import { Icon } from 'astro-icon';
+import { Icon } from 'astro-icon/components'
 import Link from './Link.astro';
 
 export interface Props {
@@ -13,7 +13,7 @@ const { href, icon } = Astro.props;
 <Link href={href} target="_blank" rel="noreferrer">
   <Icon
     name={icon}
-    class="transition-colors text-slate-500 w-8 duration-200 hover:text-theme-500"
+    class="transition-colors text-slate-500 w-8 h-8 duration-200 hover:text-theme-500"
     aria-hidden="true"
   />
 </Link>

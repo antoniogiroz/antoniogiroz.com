@@ -1,8 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { Icon } from 'astro-icon';
+import { Icon } from 'astro-icon/components';
+import TechSection from '../components/TechSection.astro';
 ---
 
 <Layout title="Antonio Giroz | Software developer">
@@ -32,7 +32,7 @@ import { Icon } from 'astro-icon';
             Hello!
             <Icon
               name="emojione:waving-hand"
-              class="mt--4 w-48px inline-flex md:w-52px lg:w-64px"
+              class="mt--4 w-48px h-48px inline-flex md:w-52px lg:w-64px lg:h-64px"
             />
             <br />
             I'm <strong class="text-theme-500">Antonio Giroz</strong>
@@ -48,50 +48,7 @@ import { Icon } from 'astro-icon';
         </div>
       </div>
 
-      <div class="mt-8 text-center lg:mt-28">
-        <h3 class="text-sm text-gray-500 uppercase">Some tech I use</h3>
-        <div class="flex flex-wrap mt-8 gap-8 items-center justify-center">
-          <Icon
-            name="logos:javascript"
-            class="w-12"
-            title="Javascript"
-            alt="Javascript logo"
-          />
-          <Icon
-            name="logos:typescript-icon"
-            class="w-12"
-            title="Typescript"
-            alt="Typescript logo"
-          />
-          <Icon name="logos:vue" class="w-12" title="Vue" alt="Vue logo" />
-          <Icon
-            name="logos:figma"
-            class="h-12"
-            title="Figma"
-            alt="Figma logo"
-          />
-          <Icon name="logos:vitejs" class="w-12" title="Vite" alt="Vite logo" />
-          <Icon
-            name="logos:postcss"
-            class="w-12"
-            title="Postcss"
-            alt="Postcss logo"
-          />
-          <Icon name="logos:sass" class="w-12" title="Sass" alt="Sass logo" />
-          <Icon
-            name="logos:graphql"
-            class="w-12"
-            title="GraphQL"
-            alt="GraphQL logo"
-          />
-          <Icon
-            name="logos:wordpress-icon"
-            class="w-12"
-            title="Wordpress"
-            alt="Wordpress logo"
-          />
-        </div>
-      </div>
+      <TechSection />
     </main>
   </div>
 </Layout>

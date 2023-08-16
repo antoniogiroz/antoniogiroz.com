@@ -1,0 +1,19 @@
+---
+import { Icon } from 'astro-icon/components';
+import { techIcons }  from '../constants';
+---
+
+<div class="mt-8 text-center lg:mt-28">
+  <h3 class="text-sm text-gray-500 uppercase">Some tech I use</h3>
+  <div class="flex flex-wrap mt-8 gap-8 items-center justify-center lg:max-w-3xl">
+    { techIcons.map((tech) => (
+      <Icon
+        name={tech.icon}
+        class="w-12 h-12"
+        title={tech.title}
+        aria-label={`${tech.title} logo`}
+      />
+    ))}
+  
+  </div>
+</div>
