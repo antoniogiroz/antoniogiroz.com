@@ -17,13 +17,13 @@
   },
   "devDependencies": {
     "@iconify-json/emojione": "1.1.7",
-    "@iconify-json/logos": "1.1.34",
+    "@iconify-json/logos": "1.1.35",
     "@iconify-json/ri": "1.1.12",
-    "@unocss/astro": "0.55.0",
-    "@unocss/reset": "0.55.0",
-    "postcss": "8.4.28",
+    "@unocss/astro": "0.55.4",
+    "@unocss/reset": "0.55.4",
+    "postcss": "8.4.29",
     "postcss-preset-env": "8.3.0",
-    "unocss": "0.55.0",
+    "unocss": "0.55.4",
     "vite": "4.4.9"
   }
 }
