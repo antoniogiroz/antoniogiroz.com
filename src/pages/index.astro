@@ -1,7 +1,8 @@
 ---
+import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon/components';
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
-import { Icon } from 'astro-icon/components';
 import TechSection from '../components/TechSection.astro';
 ---
 
@@ -17,11 +18,11 @@ import TechSection from '../components/TechSection.astro';
       >
         <div class="rounded-full relative">
         <div class="rounded-full box relative">
-          <img
+          <Image
             src="/images/antonio-giroz.jpg"
             alt="Antonio Giroz`s logo"
-            width="240px"
-            height="240px"
+            width={240}
+            height={240}
             class="rounded-full h-180px mb-4 w-180px md:h-200px md:w-200px lg:h-240px lg:w-240px"
           />
         </div>

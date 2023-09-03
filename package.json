@@ -10,20 +10,20 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/netlify": "2.6.0",
-    "@fontsource/sora": "4.5.12",
-    "astro": "2.10.9",
+    "@astrojs/netlify": "3.0.1",
+    "@fontsource/sora": "5.0.8",
+    "astro": "3.0.7",
     "astro-icon": "1.0.0-next.2"
   },
   "devDependencies": {
     "@iconify-json/emojione": "1.1.7",
     "@iconify-json/logos": "1.1.35",
     "@iconify-json/ri": "1.1.12",
-    "@unocss/astro": "0.55.4",
-    "@unocss/reset": "0.55.4",
+    "@unocss/astro": "0.55.6",
+    "@unocss/reset": "0.55.6",
     "postcss": "8.4.29",
-    "postcss-preset-env": "8.3.0",
-    "unocss": "0.55.4",
+    "postcss-preset-env": "9.1.3",
+    "unocss": "0.55.6",
     "vite": "4.4.9"
   }
 }
