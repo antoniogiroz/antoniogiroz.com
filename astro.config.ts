@@ -1,12 +1,13 @@
 import { defineConfig } from 'astro/config';
-import netlify from '@astrojs/netlify/functions';
 import unocss from 'unocss/astro';
 import icon from 'astro-icon';
+
+import vercel from '@astrojs/vercel/serverless';
 
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  adapter: netlify(),
+  adapter: vercel(),
   integrations: [
     unocss({
       injectReset: true,
