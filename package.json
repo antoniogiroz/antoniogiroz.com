@@ -1,6 +1,6 @@
 {
-  "name": "@example/basics",
-  "version": "0.0.1",
+  "name": "@antoniogiroz/website",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "astro dev",
@@ -12,19 +12,19 @@
   "dependencies": {
     "@astrojs/netlify": "3.0.2",
     "@astrojs/vercel": "^5.0.1",
-    "@fontsource/sora": "5.0.8",
+    "@fontsource/sora": "5.0.18",
     "astro": "3.2.0",
     "astro-icon": "1.0.0-next.2"
   },
   "devDependencies": {
-    "@iconify-json/emojione": "1.1.7",
-    "@iconify-json/logos": "1.1.37",
-    "@iconify-json/ri": "1.1.12",
-    "@unocss/astro": "0.56.4",
-    "@unocss/reset": "0.56.4",
-    "postcss": "8.4.31",
-    "postcss-preset-env": "9.1.4",
-    "unocss": "0.56.4",
+    "@iconify-json/emojione": "1.1.10",
+    "@iconify-json/logos": "1.1.43",
+    "@iconify-json/ri": "1.1.21",
+    "@unocss/astro": "0.61.5",
+    "@unocss/reset": "0.61.5",
+    "postcss": "8.4.39",
+    "postcss-preset-env": "9.6.0",
+    "unocss": "0.61.5",
     "vite": "4.4.9"
   }
 }
