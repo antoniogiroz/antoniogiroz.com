@@ -8,20 +8,24 @@ export const techIcons = [
     title: 'Vue',
   },
   {
-    icon: 'logos:nextjs-icon',
-    title: 'NextJS',
+    icon: 'logos:webcomponents',
+    title: 'Web Components',
+  },
+  {
+    icon: 'logos:lit-icon',
+    title: 'Lit',
   },
   {
     icon: 'logos:astro-icon',
     title: 'Astro',
   },
   {
-    icon: 'logos:react-query-icon',
-    title: 'TanStack Query',
+    icon: 'logos:nuxt-icon',
+    title: 'Nuxt',
   },
   {
-    icon: 'logos:supabase-icon',
-    title: 'Supabase',
+    icon: 'logos:react-query-icon',
+    title: 'TanStack Query',
   },
   {
     icon: 'logos:graphql',
@@ -54,6 +58,10 @@ export const techIcons = [
   {
     icon: 'logos:postcss',
     title: 'Postcss',
+  },
+  {
+    icon: 'logos:cloudflare-icon',
+    title: 'Cloudflare',
   },
   {
     icon: 'logos:netlify-icon',

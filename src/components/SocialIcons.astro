@@ -4,7 +4,13 @@ import SocialIconLink from '../components/SocialIconLink.astro';
 
 <div class="flex flex-col text-center">
   <h3 class="text-sm text-gray-500 uppercase mb-4">Follow me</h3>
-  <ul class="flex gap-4">  
+  <ul class="flex gap-4">
+    <li aria-label="Follow me on Bluesky">
+      <SocialIconLink
+        href="https://bsky.app/profile/antoniogiroz.bsky.social"
+        icon="ri:bluesky-line"
+      />
+    </li>
     <li aria-label="Follow me on X">
       <SocialIconLink
         href="https://x.com/antoniogiroz"
