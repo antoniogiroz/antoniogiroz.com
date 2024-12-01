@@ -11,19 +11,19 @@
   },
   "dependencies": {
     "@astrojs/vercel": "^7.7.2",
-    "@fontsource/sora": "5.0.18",
-    "astro": "4.12.2",
-    "astro-icon": "1.0.0-next.2"
+    "@fontsource/sora": "5.1.0",
+    "astro": "4.16.16",
+    "astro-icon": "1.1.4"
   },
   "devDependencies": {
-    "@iconify-json/emojione": "1.1.10",
-    "@iconify-json/logos": "1.1.43",
-    "@iconify-json/ri": "1.1.21",
-    "@unocss/astro": "0.61.5",
-    "@unocss/reset": "0.61.5",
-    "postcss": "8.4.39",
-    "postcss-preset-env": "9.6.0",
-    "unocss": "0.61.5",
-    "vite": "5.3.4"
+    "@iconify-json/emojione": "1.2.0",
+    "@iconify-json/logos": "1.2.3",
+    "@iconify-json/ri": "1.2.3",
+    "@unocss/astro": "0.64.1",
+    "@unocss/reset": "0.64.1",
+    "postcss": "8.4.49",
+    "postcss-preset-env": "10.1.1",
+    "unocss": "0.64.1",
+    "vite": "6.0.1"
   }
 }
