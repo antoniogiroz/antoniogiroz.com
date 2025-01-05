@@ -1,8 +1,7 @@
 import { defineConfig } from 'astro/config';
 import unocss from 'unocss/astro';
 import icon from 'astro-icon';
-
-import vercel from '@astrojs/vercel/serverless';
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
