@@ -35,6 +35,8 @@ export default defineConfig({
           'vercel-icon',
           'arc',
           'wordpress-icon-alt',
+          'swift',
+          'ios'
         ],
         ri: ['bluesky-line', 'twitter-x-line', 'github-line', 'linkedin-box-line'],
         emojione: ['waving-hand'],

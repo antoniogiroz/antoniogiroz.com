@@ -1,5 +1,13 @@
 export const techIcons = [
   {
+    icon: 'logos:swift',
+    title: 'Swift',
+  },
+  {
+    icon: 'logos:ios',
+    title: 'iOS',
+  },
+  {
     icon: 'logos:typescript-icon',
     title: 'Typescript',
   },
@@ -10,10 +18,6 @@ export const techIcons = [
   {
     icon: 'logos:webcomponents',
     title: 'Web Components',
-  },
-  {
-    icon: 'logos:lit-icon',
-    title: 'Lit',
   },
   {
     icon: 'logos:astro-icon',
@@ -44,10 +48,6 @@ export const techIcons = [
     title: 'Vitest',
   },
   {
-    icon: 'logos:testing-library',
-    title: 'Testing Library',
-  },
-  {
     icon: 'logos:playwright',
     title: 'Playwright',
   },
@@ -74,9 +74,5 @@ export const techIcons = [
   {
     icon: 'logos:arc',
     title: 'Arc',
-  },
-  {
-    icon: 'logos:wordpress-icon-alt',
-    title: 'Wordpress',
   },
 ] as const;
