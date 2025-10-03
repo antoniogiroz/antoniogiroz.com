@@ -16,14 +16,14 @@ import TechSection from '../components/TechSection.astro';
       <div
         class="text-center grid-flow-row grid gap-8 justify-items-center md:text-left md:grid-cols-3 lg:gap-8"
       >
-        <div class="rounded-full relative">
-        <div class="rounded-full box relative">
+        <div class="relative">
+        <div class="box relative">
           <Image
-            src="/images/antonio-giroz.jpg"
+            src="/images/antonio-giroz-liquid-glass.png"
             alt="Antonio Giroz`s logo"
-            width={240}
-            height={240}
-            class="rounded-full h-180px mb-4 w-180px md:h-200px md:w-200px lg:h-240px lg:w-240px"
+            width={280}
+            height={280}
+            class="image-h-180px mb-4 w-180px md:h-200px md:w-200px lg:h-280px lg:w-280px"
           />
         </div>
         </div>
@@ -66,13 +66,13 @@ import TechSection from '../components/TechSection.astro';
     background: linear-gradient(135deg, #4bc0cd 0%, #4cedf8 100%);
     transform: translate3d(0px, 0px, 0);
     filter: blur(50px);
-    opacity: var(0.9);
+    opacity: var(0.5);
     transition: opacity 0.3s;
     border-radius: inherit;
   }
 
-  /* 
-  * Prevents issues when the parent creates a 
+  /*
+  * Prevents issues when the parent creates a
   * stacking context. (For example, using the transform
   * property )
   */
