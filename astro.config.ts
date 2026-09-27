@@ -7,6 +7,8 @@ import vercel from '@astrojs/vercel';
 export default defineConfig({
   output: 'server',
   adapter: vercel(),
+  // Astro 7 defaults to 'jsx', which removes spaces between text and inline tags
+  compressHTML: true,
   integrations: [
     unocss({
       injectReset: true,
