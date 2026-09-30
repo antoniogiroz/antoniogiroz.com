@@ -1,0 +1,93 @@
+---
+import { Icon } from 'astro-icon/components';
+import { socials } from '../constants';
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  /** Home already has a contact section with the same links */
+  socials?: boolean;
+  /** Home ends at dusk: the footer is the ground of that landscape */
+  dusk?: boolean;
+}
+
+const { lang, socials: showSocials = true, dusk = false } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class:list={['site-footer', { dusk }]}>
+  <div class="wrap row">
+    <p>© {year} Antonio Giroz. {t('footer.made')}</p>
+    {showSocials && <ul>
+      {
+        socials.map((s) => (
+          <li>
+            <a href={s.href} target="_blank" rel="me noreferrer" data-mood="smile" data-say={s.handle}>
+              <Icon name={s.icon} aria-hidden="true" />
+              <span class="visually-hidden">{s.name}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>}
+  </div>
+</footer>
+
+<style>
+  .site-footer.dusk {
+    position: relative;
+    border-top: 0;
+    background: var(--dusk-ground);
+    color: var(--dusk-ink);
+  }
+  /* The same ground reaches a few pixels up, so rounding never leaves a light line at the seam */
+  .site-footer.dusk::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -6px;
+    height: 6px;
+    background: var(--dusk-ground);
+  }
+  .site-footer {
+    border-top: 1px solid var(--line);
+    padding-block: 28px;
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  ul {
+    display: flex;
+    gap: 6px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  a {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    color: var(--ink-2);
+    transition:
+      color 0.15s,
+      background 0.15s;
+  }
+  a:hover {
+    color: var(--ink);
+    background: var(--paper-2);
+  }
+  a :global(svg) {
+    width: 22px;
+    height: 22px;
+  }
+</style>

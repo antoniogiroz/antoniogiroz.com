@@ -1,0 +1,11 @@
+---
+import BlogList from '../../views/BlogList.astro';
+import { features } from '../../config';
+
+// Only /blog, and only while the blog is public (see src/config.ts)
+export function getStaticPaths() {
+  return features.blog ? [{ params: { index: undefined } }] : [];
+}
+---
+
+<BlogList lang="es" />

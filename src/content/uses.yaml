@@ -1,0 +1,30 @@
+- id: dev
+  order: 1
+  title: { es: Desarrollo, en: Development }
+  items:
+    - name: Xcode
+      note: { es: Para mis apps de iPhone y Mac., en: For my iPhone and Mac apps. }
+      url: https://developer.apple.com/xcode/
+    - name: Visual Studio Code
+      note: { es: Para todo lo que es web., en: For everything web. }
+      url: https://code.visualstudio.com/
+    - name: Claude Code
+      note: { es: Mi compañero de pair programming., en: My pair programming buddy. }
+      url: https://claude.com/claude-code
+    - name: Fork
+      note: { es: Cliente de Git., en: Git client. }
+      url: https://git-fork.com/
+
+- id: everyday
+  order: 2
+  title: { es: Día a día, en: Everyday }
+  items:
+    - name: AirPods Pro
+      note: { es: Siempre puestos. Haz clic cinco veces en el avatar y verás., en: Always on. Click the avatar five times and see. }
+      url: https://www.apple.com/airpods-pro/
+    - name: Arc
+      note: { es: Mi navegador., en: My browser. }
+      url: https://arc.net/
+    - name: Notion
+      note: { es: Notas y documentación., en: Notes and docs. }
+      url: https://www.notion.com/

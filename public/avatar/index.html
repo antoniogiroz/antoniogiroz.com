@@ -1,0 +1,1150 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Estudio del avatar pixel art de Antonio Giroz: caras, colores, formas y exportación a PNG, SVG, GIF animado o pegatinas.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style>[hidden]{display:none!important} body{margin:0} img{max-width:100%}</style>
+<title>Antonio en píxeles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&family=Silkscreen:wght@400;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  :root {
+    --ground: #eaf2f3;
+    --surface: #ffffff;
+    --ink: #15212c;
+    --muted: #566976;
+    --line: #cddcdf;
+    --accent: #2b4764;
+    --cyan: #4bc0cd;
+    --chip: #dfeaec;
+    --shadow: #2b4764;
+    --ok: #1f8a53;
+    --warn: #b4521f;
+    --display: "Silkscreen", "Courier New", monospace;
+    --body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground: #0e171f;
+      --surface: #16222d;
+      --ink: #e4eef1;
+      --muted: #91a5b2;
+      --line: #263746;
+      --accent: #7fd3dc;
+      --chip: #1d2c38;
+      --shadow: #05090d;
+      --ok: #5fd39a;
+      --warn: #f09a6a;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground: #0e171f;
+    --surface: #16222d;
+    --ink: #e4eef1;
+    --muted: #91a5b2;
+    --line: #263746;
+    --accent: #7fd3dc;
+    --chip: #1d2c38;
+    --shadow: #05090d;
+    --ok: #5fd39a;
+    --warn: #f09a6a;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font: 16px/1.5 var(--body);
+    padding-inline: 16px;
+  }
+  .wrap {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding-block: 32px 72px;
+    display: grid;
+    gap: 56px;
+  }
+  canvas.px {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 1;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+  h1, h2 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
+  h1 { font-size: clamp(30px, 5vw, 48px); line-height: 1.02; }
+  h2 { font-size: 18px; line-height: 1.2; }
+  p { margin: 0; }
+  .eyebrow, .label {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px 32px; }
+  .top-text { display: grid; gap: 8px; }
+  .top .lede { color: var(--muted); max-width: 56ch; }
+
+  /* App layout */
+  .app {
+    display: grid;
+    grid-template-columns: minmax(0, 500px) minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
+  .stage-col {
+    position: sticky;
+    top: calc(env(safe-area-inset-top, 0px) + 16px);
+    display: grid;
+    gap: 18px;
+  }
+  .stage { padding: 0; }
+  .stage canvas { filter: drop-shadow(8px 8px 0 var(--shadow)); cursor: crosshair; }
+  .stage.checker canvas, .checker-bg {
+    background: conic-gradient(var(--chip) 25%, var(--surface) 0 50%, var(--chip) 0 75%, var(--surface) 0) 0 0 / 16px 16px;
+  }
+  .strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+  .strip button {
+    padding: 0; border: 2px solid transparent; background: none; cursor: pointer; border-radius: 0;
+    display: grid; gap: 4px; justify-items: center; color: var(--muted);
+    font: 11px/1.2 var(--mono);
+  }
+  .strip button[aria-pressed="true"] { border-color: var(--ink); color: var(--ink); }
+  .strip button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+  .hint { font-size: 14px; color: var(--muted); }
+
+  .panel { display: grid; gap: 0; }
+  .sec { display: grid; gap: 14px; padding-block: 22px; border-top: 1px solid var(--line); }
+  .sec:first-child { border-top: 0; padding-top: 0; }
+  .sec-title { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .row { display: grid; gap: 8px; }
+  .row-inline { display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: end; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font: 600 13px/1 var(--mono);
+    color: var(--ink);
+    background: var(--chip);
+    border: 2px solid transparent;
+    padding: 9px 12px;
+    cursor: pointer;
+    border-radius: 0;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .chip:hover { border-color: var(--line); }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--ground); }
+  .chip:disabled { opacity: .45; cursor: not-allowed; }
+  .chip canvas { width: 16px; height: 16px; image-rendering: pixelated; display: block; outline: 1px solid color-mix(in srgb, var(--ink) 25%, transparent); }
+  .chip.ghost { background: transparent; border-color: var(--line); }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+
+  .swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+  .swatch {
+    width: 36px; height: 36px; padding: 0;
+    border: 2px solid var(--line);
+    background: none; cursor: pointer; border-radius: 0;
+  }
+  .swatch canvas { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
+  .swatch[aria-pressed="true"] { border-color: var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+
+  .color { display: grid; gap: 6px; }
+  .color-ctl { display: flex; gap: 6px; align-items: center; }
+  input[type="color"] {
+    width: 40px; height: 36px; padding: 2px; border: 2px solid var(--line);
+    background: var(--surface); cursor: pointer; border-radius: 0;
+  }
+  input[type="text"].hex {
+    width: 92px; height: 36px; padding: 0 8px;
+    font: 13px var(--mono); color: var(--ink);
+    background: var(--surface); border: 2px solid var(--line); border-radius: 0;
+    text-transform: lowercase;
+  }
+  input[type="text"].hex[aria-invalid="true"] { border-color: var(--warn); }
+  .reset { font: 12px var(--mono); color: var(--muted); background: none; border: 0; padding: 4px; cursor: pointer; text-decoration: underline; }
+  input[type="range"] { accent-color: var(--accent); width: 160px; }
+  .range-val { font: 13px var(--mono); font-variant-numeric: tabular-nums; }
+
+  .export {
+    background: var(--surface);
+    border: 2px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--shadow);
+    padding: 20px;
+    margin-top: 8px;
+  }
+  .export .sec-title { margin-bottom: 2px; }
+  .go {
+    font: 700 16px/1 var(--body);
+    background: var(--ink); color: var(--ground);
+    border: 0; padding: 14px 18px; cursor: pointer; border-radius: 0;
+    width: 100%; text-align: left; display: flex; justify-content: space-between; gap: 12px;
+  }
+  .go span { font: 13px var(--mono); opacity: .8; align-self: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .go:disabled { opacity: .6; cursor: progress; }
+  .status { font-size: 14px; min-height: 1.5em; color: var(--muted); }
+  .status.ok { color: var(--ok); }
+  .status.err { color: var(--warn); }
+  .file-btn { position: relative; overflow: hidden; }
+  .file-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+  /* Context */
+  section.ctx { display: grid; gap: 20px; }
+  .ctx-head { display: grid; gap: 6px; max-width: 64ch; }
+  .ctx-head p { color: var(--muted); }
+  .mocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; align-items: start; }
+  .mock { background: var(--surface); border: 1px solid var(--line); display: grid; }
+  .mock-cap { padding: 12px 16px; border-top: 1px solid var(--line); display: grid; gap: 2px; }
+  .mock-cap span { font-size: 14px; color: var(--muted); }
+  .profile .banner { width: 100%; aspect-ratio: 3 / 1; display: block; image-rendering: pixelated; }
+  .profile .body { padding: 0 16px 18px; display: grid; gap: 4px; }
+  .profile .pic { width: 96px; margin-top: -48px; position: relative; background: var(--surface); border-radius: 50%; padding: 4px; }
+  .profile .dot { position: absolute; right: 6px; bottom: 6px; width: 20px; height: 20px; border-radius: 50%; background: #2fbf71; border: 4px solid var(--surface); }
+  .profile .name { font-weight: 700; font-size: 18px; margin-top: 6px; }
+  .profile .handle { color: var(--muted); font-size: 14px; }
+  .browser { padding: 14px 14px 0; }
+  .tabs { display: flex; gap: 6px; align-items: end; }
+  .tab { display: flex; align-items: center; gap: 8px; background: var(--ground); padding: 8px 12px; font-size: 13px; min-width: 0; }
+  .tab.dim { background: transparent; color: var(--muted); }
+  .tab canvas { width: 16px; height: 16px; image-rendering: pixelated; flex: none; }
+  .tab .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .addr { background: var(--ground); padding: 8px 12px 12px; font: 13px var(--mono); color: var(--muted); }
+  .addr b { display: block; background: var(--surface); padding: 6px 10px; font-weight: 400; }
+  .fav-big { display: flex; gap: 16px; align-items: end; padding: 18px 16px; }
+  .fav-big canvas { image-rendering: pixelated; }
+  .e404 { padding: 22px 16px; display: grid; grid-template-columns: 96px 1fr; gap: 16px; align-items: center; }
+  .e404 .code { font-family: var(--display); font-size: 44px; line-height: 1; }
+  .e404 p { font-size: 15px; color: var(--muted); margin-top: 6px; }
+
+  footer { color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); padding-top: 16px; }
+
+  @media (max-width: 880px) {
+    .app { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .stage-col { position: static; max-width: 460px; }
+  }
+  @media (max-width: 420px) {
+    .strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .export { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="top-text">
+      <p class="eyebrow">Estudio de avatar · 48 × 48 píxeles</p>
+      <h1>Antonio en píxeles</h1>
+    </div>
+    <p class="lede">Elige cara, colores, fondo y forma. Después exporta a PNG, SVG, WebP, JPG, GIF animado o un pack completo en ZIP.</p>
+  </header>
+
+  <main class="app">
+    <div class="stage-col">
+      <div class="stage" id="stage">
+        <canvas id="hero" class="px" width="48" height="48" role="img" aria-label="Vista previa del avatar"></canvas>
+      </div>
+      <div class="strip" id="strip" aria-label="Expresiones"></div>
+      <p class="hint">Mueve el cursor cerca del avatar para cambiar la dirección de la mirada.</p>
+    </div>
+
+    <div class="panel">
+      <div class="sec">
+        <div class="sec-title"><h2>Cara</h2></div>
+        <div class="chips" id="exprChips"></div>
+        <div class="chips">
+          <button class="chip" id="tAirpods" type="button" aria-pressed="false">AirPods Pro</button>
+          <button class="chip" id="tGlint" type="button" aria-pressed="true">Brillo en las gafas</button>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title"><h2>Fondo</h2><button class="reset" id="randomBg" type="button">Combinación al azar</button></div>
+        <div class="row">
+          <span class="label">Combinaciones</span>
+          <div class="swatches" id="presets"></div>
+        </div>
+        <div class="row">
+          <span class="label">Patrón</span>
+          <div class="chips" id="patterns"></div>
+        </div>
+        <div class="row-inline">
+          <div class="color">
+            <label class="label" for="colA">Color A</label>
+            <div class="color-ctl"><input type="color" id="colA"><input type="text" class="hex" id="hexA" maxlength="7" spellcheck="false" aria-label="Color A en hexadecimal"></div>
+          </div>
+          <div class="color" id="rowB">
+            <label class="label" for="colB">Color B</label>
+            <div class="color-ctl"><input type="color" id="colB"><input type="text" class="hex" id="hexB" maxlength="7" spellcheck="false" aria-label="Color B en hexadecimal"></div>
+          </div>
+          <button class="chip ghost" id="swapAB" type="button">Invertir A y B</button>
+          <div class="color" id="rowScale">
+            <label class="label" for="scale">Tamaño del patrón</label>
+            <div class="color-ctl"><input type="range" id="scale" min="1" max="4" step="1"><span class="range-val" id="scaleVal"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title"><h2>Ropa y gafas</h2></div>
+        <div class="row-inline">
+          <div class="color">
+            <label class="label" for="colShirt">Camiseta</label>
+            <div class="color-ctl"><input type="color" id="colShirt"><input type="text" class="hex" id="hexShirt" maxlength="7" spellcheck="false" aria-label="Color de la camiseta en hexadecimal"><button class="reset" id="resetShirt" type="button">Original</button></div>
+          </div>
+          <div class="color">
+            <label class="label" for="colFrame">Montura</label>
+            <div class="color-ctl"><input type="color" id="colFrame"><input type="text" class="hex" id="hexFrame" maxlength="7" spellcheck="false" aria-label="Color de la montura en hexadecimal"><button class="reset" id="resetFrame" type="button">Original</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title"><h2>Forma</h2></div>
+        <div class="chips" id="shapeChips"></div>
+      </div>
+
+      <div class="sec export">
+        <div class="sec-title"><h2>Exportar</h2><span class="label" id="dimLabel"></span></div>
+        <div class="row">
+          <span class="label">Formato</span>
+          <div class="chips" id="fmtChips"></div>
+        </div>
+        <div class="row" id="rowSize">
+          <span class="label">Tamaño</span>
+          <div class="chips" id="sizeChips"></div>
+        </div>
+        <div class="row" id="rowAnim">
+          <span class="label">Animación</span>
+          <div class="chips" id="animChips"></div>
+        </div>
+        <div class="chips" id="rowTransp">
+          <button class="chip" id="tTransp" type="button" aria-pressed="false">Fondo transparente</button>
+        </div>
+        <p class="hint" id="fmtHint"></p>
+        <button class="go" id="go" type="button"><b>Exportar</b><span id="goName"></span></button>
+        <p class="status" id="status" aria-live="polite"></p>
+        <div class="chips">
+          <span class="chip ghost file-btn">Cargar configuración (.json)<input type="file" id="importCfg" accept=".json,application/json" aria-label="Cargar configuración"></span>
+          <button class="chip ghost" id="resetAll" type="button">Volver al original</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <section class="ctx">
+    <div class="ctx-head">
+      <h2>En contexto</h2>
+      <p>Tu configuración actual en una foto de perfil, en la pestaña del navegador y en una página de error.</p>
+    </div>
+    <div class="mocks">
+      <div class="mock profile">
+        <canvas class="banner" id="banner" width="96" height="32" aria-hidden="true"></canvas>
+        <div class="body">
+          <div class="pic">
+            <canvas class="px" id="profilePic" width="48" height="48" role="img" aria-label="Avatar en círculo"></canvas>
+            <span class="dot" aria-hidden="true"></span>
+          </div>
+          <div class="name">Antonio Giroz</div>
+          <div class="handle">@antoniogiroz · disponible</div>
+        </div>
+        <div class="mock-cap"><strong class="label">Perfil social</strong><span>Círculo y banner con tu mismo patrón.</span></div>
+      </div>
+      <div class="mock">
+        <div class="browser">
+          <div class="tabs">
+            <div class="tab"><canvas id="fav16" width="32" height="32" aria-hidden="true"></canvas><span class="t">Antonio Giroz</span></div>
+            <div class="tab dim"><span class="t">Nueva pestaña</span></div>
+          </div>
+          <div class="addr"><b>tu-dominio.dev</b></div>
+        </div>
+        <div class="fav-big">
+          <canvas id="fav32" width="32" height="32" style="width:64px;height:64px" aria-hidden="true"></canvas>
+          <canvas id="fav32b" width="32" height="32" style="width:32px;height:32px" aria-hidden="true"></canvas>
+        </div>
+        <div class="mock-cap"><strong class="label">Favicon</strong><span>Recorte de la cabeza a 32 × 32 píxeles. El pack ZIP incluye favicon.ico y los iconos de app.</span></div>
+      </div>
+      <div class="mock">
+        <div class="e404">
+          <canvas class="px" id="err" width="48" height="48" role="img" aria-label="Avatar sorprendido"></canvas>
+          <div>
+            <div class="code">404</div>
+            <p>Esta página no existe. Yo tampoco me lo esperaba.</p>
+          </div>
+        </div>
+        <div class="mock-cap"><strong class="label">Página de error</strong><span>La cara de sorpresa con tus colores.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Todo se dibuja en directo desde la rejilla original de 48 × 48. Los bordes suavizados contra el cian se convirtieron en transparencia, así el avatar funciona sobre cualquier fondo.</footer>
+</div>
+
+<script>
+const A = {"pal":["#4d3a3033","#4d3a30a5","#4d3a30ff","#4d3a3019","#4d3a307f","#624c40ff","#816b5dff","#8f776aff","#9f8475ff","#5a463bff","#3e36313f","#a18071ff","#dfb9a4ff","#fbcfb5ff","#3e3631ff","#d3af9aff","#fed5bcff","#fdddc8ff","#ebc3abff","#3e36317f","#fde4d3ff","#6e5c53ff","#fcedddff","#866550ff","#cca38bff","#00000026","#5d412fff","#1f1b18ff","#000000ff","#c7a693ff","#785643ff","#604e44ff","#c9a591ff","#c09d88ff","#a3826fff","#524138ff","#3f3f3fff","#af8872ff","#171717ff","#f0c4aaff","#2d2d2dff","#aa836dff","#fafafaff","#088bafff","#005c72ff","#6a4a3aff","#ceb6a6ff","#bf9e8aff","#584940ff","#4c4c4cff","#604c40ff","#585858ff","#f3cab1ff","#5d412f33","#97745fff","#aa8470ff","#d1a88fff","#c49d86ff","#d5ac95ff","#e4baa2ff","#b98374ff","#efc3a9ff","#7856437f","#ac846fff","#cd7f7aff","#bc6663ff","#7856433f","#e1b8a0ff","#be9680ff","#5d412f72","#2a3b4d7f","#2a3b4d3f","#2a3b4dff","#8f979fff","#2f4f6fff","#caced2ff","#2d465eff","#365b7fff","#4a5765ff","#e9eaecff","#757f8aff","#ffffffff","#2b4764ff"],"rows":[[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,1,2,2,2,2,2,2,1,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,3,4,2,5,6,7,8,8,7,6,9,2,4,3,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,10,2,5,11,12,13,13,13,13,13,13,12,11,5,2,10,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,10,14,8,15,16,17,17,17,17,17,17,17,17,16,15,8,14,10,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,10,14,8,18,16,17,17,17,17,17,17,17,17,17,17,16,18,8,14,10,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,19,14,18,13,17,20,20,20,20,20,20,20,20,20,20,17,13,18,14,19,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,10,14,8,13,13,17,17,20,20,20,20,20,20,20,20,17,17,13,13,8,14,10,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,19,14,15,13,13,16,17,17,17,20,20,20,20,17,17,17,16,13,13,15,14,19,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,14,21,13,13,13,13,16,17,17,17,17,17,17,17,17,16,13,13,13,13,21,14,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,14,8,13,13,16,17,17,20,20,20,20,20,20,20,20,17,17,16,13,13,8,14,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,14,15,13,13,17,20,20,20,22,22,22,22,22,22,20,20,20,17,13,13,15,14,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,14,18,13,13,16,17,17,20,20,20,22,22,20,20,20,17,17,16,13,13,18,14,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,14,13,13,23,14,14,14,23,24,17,17,20,17,24,23,14,14,14,23,13,13,14,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,25,26,27,28,28,28,28,28,28,28,28,29,17,20,29,28,28,28,28,28,28,28,28,27,26,25,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,30,28,28,31,32,33,33,33,33,34,35,28,36,36,28,35,34,33,33,33,33,32,31,28,28,30,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,30,37,38,16,39,39,23,14,14,23,24,38,28,28,38,24,23,14,14,23,39,39,16,38,37,30,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,30,37,40,17,39,41,42,43,44,42,41,40,17,17,40,41,42,43,44,42,41,39,17,40,37,30,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,45,37,36,46,13,39,39,39,39,39,47,36,17,20,36,47,39,39,39,39,39,13,46,36,37,45,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,45,37,48,49,46,17,17,17,17,46,49,47,17,20,47,49,46,17,17,17,17,46,49,48,37,45,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,26,37,50,46,51,51,51,51,51,51,46,13,20,22,39,46,51,51,51,51,51,51,46,50,37,26,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,26,23,30,52,20,22,22,22,22,17,17,16,22,42,13,16,17,22,22,22,22,20,52,30,23,26,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,53,26,30,52,20,22,22,20,17,17,39,17,17,20,16,39,17,17,20,22,22,20,52,30,26,53,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,53,30,52,17,22,20,17,13,39,39,54,41,55,54,24,39,13,17,20,22,17,52,30,53,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,30,56,17,20,17,13,39,57,57,57,58,58,57,57,57,39,13,17,20,17,56,30,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,30,55,17,17,17,59,60,61,17,20,20,20,20,17,61,60,59,17,17,17,55,30,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,62,30,13,17,17,63,13,64,65,65,65,65,65,65,64,13,63,17,17,13,30,62,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,66,30,61,13,13,57,39,17,39,67,67,67,67,39,17,39,57,13,13,61,30,66,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,30,68,61,67,58,67,13,13,17,17,17,17,13,13,67,58,67,61,68,30,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,62,30,58,58,57,58,61,17,17,17,17,17,17,61,58,57,58,58,30,62,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,53,30,55,58,57,58,61,17,22,22,22,22,17,61,58,57,58,55,30,53,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,69,26,30,57,57,57,67,17,20,22,22,20,17,67,57,57,57,30,26,69,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,70,26,37,30,55,57,57,61,17,17,17,17,61,57,57,55,30,37,26,70,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,71,70,72,73,30,24,37,26,30,55,57,57,57,57,57,57,55,30,26,37,24,30,73,72,70,71,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,71,70,72,72,72,74,75,23,67,24,24,37,30,45,26,26,26,26,45,30,37,24,24,67,23,75,74,72,72,72,70,71,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,71,70,72,72,76,74,77,77,74,75,54,67,67,67,24,24,24,24,24,24,24,24,24,24,67,67,67,54,75,74,77,77,74,76,72,72,70,71,-1,-1,-1,-1,-1],[-1,-1,71,70,72,72,76,74,77,77,77,77,77,74,75,41,24,39,39,39,67,24,24,24,24,24,24,67,39,39,39,24,41,75,74,77,77,77,77,77,74,76,72,72,70,71,-1,-1],[70,72,72,76,74,77,77,77,77,77,77,77,77,74,73,75,41,39,39,39,39,39,39,39,39,39,39,39,39,39,39,41,75,73,74,77,77,77,77,77,77,77,77,74,76,72,72,70],[76,74,77,77,77,77,77,77,74,74,74,74,74,76,78,79,41,39,39,13,13,13,13,13,13,13,13,13,13,13,39,41,79,78,76,74,74,74,74,74,77,77,77,77,77,77,74,76],[77,77,77,74,74,74,74,74,74,74,74,74,74,74,76,80,81,24,67,13,13,13,13,13,13,13,13,13,13,67,24,81,80,76,74,74,74,74,74,74,74,74,74,74,74,77,77,77],[74,74,74,74,74,74,74,74,74,74,74,74,74,74,74,82,73,81,24,24,39,17,17,17,17,17,17,39,24,24,81,73,82,74,74,74,74,74,74,74,74,74,74,74,74,74,74,74],[74,74,74,74,74,74,74,74,74,74,82,82,82,82,82,82,72,80,81,81,24,24,24,24,24,24,24,24,81,81,80,72,82,82,82,82,82,82,74,74,74,74,74,74,74,74,74,74],[74,74,74,74,82,82,82,82,82,82,82,82,82,82,82,82,82,72,78,73,81,81,81,81,81,81,81,81,73,78,72,82,82,82,82,82,82,82,82,82,82,82,82,82,74,74,74,74],[82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,72,72,72,72,72,72,72,72,72,72,72,72,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82],[82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82],[82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82],[82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82]]};
+const E = {"colors":{"L":"#bc6663","l":"#cd7f7a","T":"#ffffff","t":"#ece4de","D":"#5b2725","G":"#d9676b","g":"#c4545a","s":"#fbcfb5","S":"#fdddc8","c":"#efc3a9","k":"#f0c4aa","d":"#b98374","h":"#e4baa2","W":"#fafafa","I":"#088baf","P":"#005c72","e":"#866550","a":"#3e3631","1":"#ffffff","2":"#eef0f2","3":"#d3d7dc","4":"#a9afb6","5":"#7d848c"},"eyes":{"closed":[[17,"kkkk"],[18,"eaae"]],"happy":[[16,"kkkk"],[17,"kaak"],[18,"akka"]],"wide":[[16,"eaae"],[17,"WIIW"],[18,"WIPW"]]},"expr":{"normal":{"name":"Normal"},"smile":{"name":"Sonrisa","blush":0.28,"mouth":[[25,19,"d........d"],[26,19,"cL......Lc"],[27,20,"sLLLLLLs"]]},"grin":{"name":"Risa","blush":0.34,"eyes":"happy","mouth":[[25,19,"d........d"],[26,19,"LTTTTTTTTL"],[27,19,"sLDDDDDDLs"],[28,20,"sLGGGGLs"],[29,22,"llll"]]},"wink":{"name":"Guiño","blush":0.28,"eyeR":"closed","mouth":[[25,19,"d........d"],[26,19,"cL......Lc"],[27,20,"sLLLLLLs"]]},"surprise":{"name":"Sorpresa","eyes":"wide","mouth":[[26,19,"c...LL...c"],[27,20,"SSLDDLSS"],[28,22,"LDDL"],[29,23,"ll"]]},"tongue":{"name":"Burla","eyeL":"closed","mouth":[[25,19,"d........d"],[26,19,"cL......Lc"],[27,20,"sLLLLLLs"],[28,23,"GGG"],[29,23,"gGg"]]},"sleep":{"name":"Dormido","eyes":"closed","zzz":true}},"accessories":{"airpods":{"name":"AirPods Pro","ops":[[19,11,"41"],[20,11,"32"],[21,12,"1"],[22,12,"3"],[19,35,"14"],[20,35,"23"],[21,35,"1"],[22,35,"3"]]}}};
+const N = 48;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Color helpers ---------- */
+const parse = h => { h = h.replace('#', ''); if (h.length === 6) h += 'ff';
+  return [0, 2, 4, 6].map(i => parseInt(h.slice(i, i + 2), 16)); };
+const toHex = c => '#' + c.slice(0, 3).map(v => Math.round(v).toString(16).padStart(2, '0')).join('');
+const isHex = h => /^#[0-9a-f]{6}$/i.test(h);
+const clamp = v => Math.max(0, Math.min(255, Math.round(v)));
+const lum = c => (0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]) / 255;
+const mix = (c, t, a) => [0, 1, 2].map(i => clamp(c[i] * (1 - a) + t[i] * a)).concat(c[3]);
+function hsl(h, s, l) {
+  s /= 100; l /= 100;
+  const k = n => (n + h / 30) % 12, a = s * Math.min(l, 1 - l);
+  const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  return toHex([f(0) * 255, f(8) * 255, f(4) * 255]);
+}
+
+const PAL = A.pal.map(parse);
+const ORIG = A.rows.map(r => r.map(v => v < 0 ? null : PAL[v]));
+const EC = {};
+for (const k in E.colors) EC[k] = parse(E.colors[k]);
+
+/* ---------- Recolor (shirt and frame) ---------- */
+const SHIRT = new Set(['#2a3b4d', '#2f4f6f', '#2d465e', '#365b7f', '#4a5765', '#2b4764']);
+const FRAME = new Set(['#000000', '#1f1b18', '#171717', '#3f3f3f', '#2d2d2d', '#4c4c4c', '#585858']);
+const SHIRT_BASE = parse('#2f4f6f');
+const ORIG_SHIRT = '#2f4f6f', ORIG_FRAME = '#000000';
+let baseKey = null, BASE = ORIG;
+function getBase(s) {
+  const key = (s.shirt || '') + '|' + (s.frame || '');
+  if (key === baseKey) return BASE;
+  const sh = s.shirt ? parse(s.shirt) : null, fr = s.frame ? parse(s.frame) : null;
+  const memo = new Map();
+  const map = c => {
+    const k = c.join(',');
+    if (memo.has(k)) return memo.get(k);
+    const h = toHex(c);
+    let out = c;
+    if (sh && SHIRT.has(h)) {
+      const f = lum(c) / lum(SHIRT_BASE);
+      out = [clamp(sh[0] * f), clamp(sh[1] * f), clamp(sh[2] * f), c[3]];
+    } else if (fr && FRAME.has(h)) {
+      const t = lum(c) * 0.6;
+      out = [clamp(fr[0] + (255 - fr[0]) * t), clamp(fr[1] + (255 - fr[1]) * t), clamp(fr[2] + (255 - fr[2]) * t), c[3]];
+    }
+    memo.set(k, out);
+    return out;
+  };
+  BASE = ORIG.map(r => r.map(c => c ? map(c) : null));
+  baseKey = key;
+  return BASE;
+}
+
+/* ---------- Face ---------- */
+const Z_BIG = ['#####', '...#.', '..#..', '.#...', '#####'];
+const Z_SMALL = ['####', '..#.', '.#..', '####'];
+const BLUSH = [240, 110, 100];
+function faceGrid(s) {
+  const g = getBase(s).map(r => r.slice());
+  const d = E.expr[s.expr] || E.expr.normal;
+  const eye = (kind, x0) => { for (const [y, str] of E.eyes[kind]) for (let i = 0; i < str.length; i++) g[y][x0 + i] = EC[str[i]]; };
+  for (const [kind, x0] of [[d.eyeL || d.eyes, 17], [d.eyeR || d.eyes, 27]]) {
+    if (kind === 'closed' || kind === 'happy') { eye(kind, x0); continue; }
+    if (s.blink) { eye('closed', x0); continue; }
+    if (kind) eye(kind, x0);
+    else if (s.look) {
+      const row = s.look < 0 ? 'IPWW' : 'WWIP';
+      for (let i = 0; i < 4; i++) g[18][x0 + i] = EC[row[i]];
+    }
+  }
+  for (const [y, x, str] of d.mouth || []) for (let i = 0; i < str.length; i++) if (str[i] !== '.') g[y][x + i] = EC[str[i]];
+  if (d.blush) for (const y of [22, 23]) for (const x of [15, 16, 17, 30, 31, 32]) if (g[y][x]) g[y][x] = mix(g[y][x], BLUSH, d.blush);
+  if (s.airpods) for (const [y, x, str] of E.accessories.airpods.ops) for (let i = 0; i < str.length; i++) if (str[i] !== '.') g[y][x + i] = EC[str[i]];
+  return g;
+}
+
+/* ---------- Backgrounds ---------- */
+const BAYER = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
+const PATTERNS = [
+  { id: 'solid', name: 'Liso' },
+  { id: 'dither', name: 'Degradado' },
+  { id: 'radial', name: 'Foco' },
+  { id: 'diag', name: 'Diagonales' },
+  { id: 'hstripes', name: 'Franjas' },
+  { id: 'checker', name: 'Ajedrez' },
+  { id: 'dots', name: 'Puntos' },
+  { id: 'grid', name: 'Cuadrícula' },
+  { id: 'rays', name: 'Rayos' },
+  { id: 'confetti', name: 'Confeti' }
+];
+const PRESETS = [
+  { name: 'Cian original', pattern: 'solid', a: '#4bc0cd', b: '#2b4764' },
+  { name: 'Mostaza', pattern: 'solid', a: '#f2b33d', b: '#e29a1f' },
+  { name: 'Coral', pattern: 'solid', a: '#f07167', b: '#c9504a' },
+  { name: 'Menta', pattern: 'solid', a: '#8fd6b4', b: '#5fb98f' },
+  { name: 'Lavanda', pattern: 'solid', a: '#a99cf0', b: '#7d6fd6' },
+  { name: 'Noche', pattern: 'grid', a: '#1d2b3a', b: '#2c4057' },
+  { name: 'Tramado cian', pattern: 'dither', a: '#4bc0cd', b: '#2b4764' },
+  { name: 'Atardecer', pattern: 'dither', a: '#f2b33d', b: '#f07167' },
+  { name: 'Foco lavanda', pattern: 'radial', a: '#c9c0ff', b: '#7d6fd6' },
+  { name: 'Rayas cian', pattern: 'diag', a: '#4bc0cd', b: '#42b1be' },
+  { name: 'Puntos mostaza', pattern: 'dots', a: '#f2b33d', b: '#e29a1f' },
+  { name: 'Rayos', pattern: 'rays', a: '#f2b33d', b: '#f6c768' },
+  { name: 'Confeti', pattern: 'confetti', a: '#1d2b3a', b: '#f2b33d' }
+];
+function hash2(x, y) {
+  let h = Math.imul(x, 374761393) + Math.imul(y, 668265263);
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+}
+function prepBg(b) { return { kind: b.pattern, A: parse(b.a), B: parse(b.b), s: b.scale || 1 }; }
+function bgColor(bg, x, y, W, H) {
+  const s = bg.s, X = Math.floor(x / s), Y = Math.floor(y / s);
+  switch (bg.kind) {
+    case 'dither': return (BAYER[Y & 3][X & 3] + .5) / 16 < y / (H - 1) ? bg.B : bg.A;
+    case 'radial': {
+      const d = Math.hypot(x + .5 - W / 2, y + .5 - H * .42) / (Math.max(W, H) * .62);
+      return (BAYER[Y & 3][X & 3] + .5) / 16 < d ? bg.B : bg.A;
+    }
+    case 'diag': return Math.floor((x + y) / (4 * s)) & 1 ? bg.B : bg.A;
+    case 'hstripes': return Math.floor(y / (4 * s)) & 1 ? bg.B : bg.A;
+    case 'checker': return (Math.floor(x / (4 * s)) + Math.floor(y / (4 * s))) & 1 ? bg.B : bg.A;
+    case 'dots': return (X % 4 === 1 && Y % 4 === 1) ? bg.B : bg.A;
+    case 'grid': return (X % 6 === 0 || Y % 6 === 0) ? bg.B : bg.A;
+    case 'rays': {
+      const ang = Math.atan2(y + .5 - H * .8, x + .5 - W / 2) + Math.PI;
+      return Math.floor(ang / (Math.PI / 9)) & 1 ? bg.B : bg.A;
+    }
+    case 'confetti': return hash2(X, Y) < .14 ? bg.B : bg.A;
+    default: return bg.A;
+  }
+}
+function paintBg(ctx, W, H, b) {
+  const bg = prepBg(b), img = ctx.createImageData(W, H);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const c = bgColor(bg, x, y, W, H);
+    img.data.set([c[0], c[1], c[2], 255], (y * W + x) * 4);
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
+/* ---------- Shapes ---------- */
+const SHAPES = [
+  { id: 'square', name: 'Cuadrado' },
+  { id: 'rounded', name: 'Redondeado' },
+  { id: 'circle', name: 'Círculo' },
+  { id: 'arch', name: 'Arco' },
+  { id: 'sticker', name: 'Pegatina' }
+];
+function superellipse(cx, cy, r, n = 5, steps = 180) {
+  const pts = [];
+  for (let i = 0; i < steps; i++) {
+    const t = i / steps * Math.PI * 2, c = Math.cos(t), s = Math.sin(t);
+    pts.push([cx + r * Math.sign(c) * Math.abs(c) ** (2 / n), cy + r * Math.sign(s) * Math.abs(s) ** (2 / n)]);
+  }
+  return pts;
+}
+/* Smooth vector outline of a shape, at any output size */
+function shapePath(ctx, shape, W) {
+  ctx.beginPath();
+  if (shape === 'circle') ctx.arc(W / 2, W / 2, W / 2, 0, Math.PI * 2);
+  else if (shape === 'rounded') superellipse(W / 2, W / 2, W / 2).forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
+  else if (shape === 'arch') { ctx.moveTo(0, W); ctx.lineTo(0, W / 2); ctx.arc(W / 2, W / 2, W / 2, Math.PI, 0); ctx.lineTo(W, W); }
+  else ctx.rect(0, 0, W, W);
+  ctx.closePath();
+}
+function svgClip(shape) {
+  if (shape === 'circle') return '<circle cx="24" cy="24" r="24"/>';
+  if (shape === 'arch') return '<path d="M0 48V24A24 24 0 0 1 48 24V48Z"/>';
+  if (shape === 'rounded') return '<path d="M' + superellipse(24, 24, 24, 5, 120).map(p => p.map(v => v.toFixed(2)).join(' ')).join('L') + 'Z"/>';
+  return '<rect width="48" height="48"/>';
+}
+
+/* ---------- Compose (48 × 48 pixel content, no shape) ---------- */
+function blend(buf, i, c, extraA = 1) {
+  const a = c[3] / 255 * extraA;
+  if (a <= 0) return;
+  const da = buf[i + 3] / 255, oa = a + da * (1 - a);
+  for (let k = 0; k < 3; k++) buf[i + k] = (c[k] * a + buf[i + k] * da * (1 - a)) / oa;
+  buf[i + 3] = oa * 255;
+}
+const WHITE = [255, 255, 255, 255];
+function compose(s) {
+  const buf = new Uint8ClampedArray(N * N * 4);
+  const g = faceGrid(s);
+  if (s.shape !== 'sticker' && !s.transparent) {
+    const bg = prepBg(s.bg);
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      const c = bgColor(bg, x, y, N, N), i = (y * N + x) * 4;
+      buf[i] = c[0]; buf[i + 1] = c[1]; buf[i + 2] = c[2]; buf[i + 3] = 255;
+    }
+  }
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (g[y][x]) blend(buf, (y * N + x) * 4, g[y][x]);
+  if (s.gp > -50) for (let y = 16; y <= 20; y++) for (const [x0, x1] of [[13, 21], [26, 34]])
+    for (let x = x0; x <= x1; x++) {
+      const d = (x - x0) + (20 - y) - s.gp;
+      if (d === 0 || d === 1) blend(buf, (y * N + x) * 4, WHITE, .55);
+    }
+  if ((E.expr[s.expr] || {}).zzz) [[Z_BIG, 40, 2], [Z_SMALL, 35, 9]].forEach(([z, zx, zy]) =>
+    z.forEach((row, j) => [...row].forEach((ch, k) => {
+      if (ch === '#') blend(buf, ((zy + j) * N + zx + k) * 4, WHITE, .92);
+    })));
+  return new ImageData(buf, N, N);
+}
+
+/* ---------- Render at output size: pixels stay crisp, shapes stay smooth ---------- */
+function canvasOf(img) { const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; c.getContext('2d').putImageData(img, 0, 0); return c; }
+const outSize = (s, k) => (s.shape === 'sticker' ? 56 : 48) * k;
+function tinted(src, color) {
+  const t = document.createElement('canvas'); t.width = src.width; t.height = src.height;
+  const x = t.getContext('2d'); x.drawImage(src, 0, 0);
+  x.globalCompositeOperation = 'source-in'; x.fillStyle = color; x.fillRect(0, 0, t.width, t.height);
+  return t;
+}
+function ringOf(src, W, pad, r) {
+  const c = document.createElement('canvas'); c.width = c.height = W;
+  const x = c.getContext('2d');
+  for (const rr of [r * .35, r * .7, r]) for (let i = 0; i < 32; i++) {
+    const a = i / 32 * Math.PI * 2;
+    x.drawImage(src, pad + Math.cos(a) * rr, pad + Math.sin(a) * rr);
+  }
+  x.drawImage(src, pad, pad);
+  return c;
+}
+function renderInto(c, s, k, fill) {
+  const W = Math.round(outSize(s, k));
+  if (c.width !== W) { c.width = W; c.height = W; }
+  const x = c.getContext('2d');
+  x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1;
+  x.clearRect(0, 0, W, W);
+  const src = canvasOf(compose(s));
+  if (s.shape === 'sticker') {
+    const S = Math.round(48 * k), pad = (W - S) / 2;
+    const av = document.createElement('canvas'); av.width = av.height = S;
+    const ax = av.getContext('2d'); ax.imageSmoothingEnabled = false; ax.drawImage(src, 0, 0, S, S);
+    const r = 2.2 * k;
+    const shadow = ringOf(tinted(av, '#08141e'), W, pad, r);
+    const white = ringOf(tinted(av, '#ffffff'), W, pad, r);
+    x.globalAlpha = .28; x.drawImage(shadow, k * .6, k * 1.6); x.globalAlpha = 1;
+    x.drawImage(white, 0, 0);
+    x.drawImage(av, pad, pad);
+  } else {
+    x.imageSmoothingEnabled = false;
+    x.drawImage(src, 0, 0, W, W);
+    if (s.shape !== 'square') {
+      x.globalCompositeOperation = 'destination-in';
+      shapePath(x, s.shape, W); x.fill();
+      x.globalCompositeOperation = 'source-over';
+    }
+  }
+  if (fill) { x.globalCompositeOperation = 'destination-over'; x.fillStyle = fill; x.fillRect(0, 0, W, W); x.globalCompositeOperation = 'source-over'; }
+  return c;
+}
+const renderScaled = (s, k, fill) => renderInto(document.createElement('canvas'), s, k, fill);
+
+/* ---------- Live avatars ---------- */
+const pointer = { x: 0, y: 0, t: -1e9 };
+addEventListener('pointermove', e => { pointer.x = e.clientX; pointer.y = e.clientY; pointer.t = performance.now(); });
+class Avatar {
+  constructor(canvas, getOpts, { follow = false } = {}) {
+    this.c = canvas; this.get = getOpts; this.follow = follow;
+    const t = performance.now();
+    this.nextBlink = t + 800 + Math.random() * 3000; this.blinkAt = -1e9; this.blink2 = -1e9;
+    this.nextGlint = t + 1500 + Math.random() * 4000; this.glintAt = -1e9;
+    this.nextGlance = t + 3000 + Math.random() * 5000; this.glanceUntil = 0; this.glanceDir = 0;
+    this.key = '';
+  }
+  tick(t) {
+    const o = this.get();
+    if (!reduce) {
+      if (t > this.nextBlink) {
+        this.blinkAt = t; this.blink2 = Math.random() < .25 ? t + 260 : -1e9;
+        this.nextBlink = t + 2400 + Math.random() * 3600;
+      }
+      if (o.glint && t > this.nextGlint) { this.glintAt = t; this.nextGlint = t + 4500 + Math.random() * 4500; }
+      if (t > this.nextGlance) {
+        this.glanceDir = Math.random() < .5 ? -1 : 1; this.glanceUntil = t + 700 + Math.random() * 600;
+        this.nextGlance = t + 4000 + Math.random() * 6000;
+      }
+    }
+    const blink = (t - this.blinkAt < 120) || (t - this.blink2 >= 0 && t - this.blink2 < 120);
+    const gt = t - this.glintAt;
+    const gp = o.glint && gt >= 0 && gt < 650 ? Math.floor(gt / 650 * 16) - 2 : -99;
+    let look = t < this.glanceUntil ? this.glanceDir : 0;
+    if (this.follow && t - pointer.t < 4000) {
+      const r = this.c.getBoundingClientRect();
+      const dx = pointer.x - (r.left + r.width / 2);
+      look = Math.abs(dx) < r.width * .12 ? 0 : Math.sign(dx);
+    }
+    const base = o.shape === 'sticker' ? 56 : 48;
+    const k = Math.max(1, Math.round((this.c.clientWidth || base) * (devicePixelRatio || 1)) / base);
+    const key = JSON.stringify(o) + blink + look + gp + k;
+    if (key === this.key) return;
+    this.key = key;
+    renderInto(this.c, { ...o, blink, look, gp }, k);
+  }
+}
+
+/* ---------- State ---------- */
+const DEFAULT = {
+  expr: 'normal',
+  bg: { pattern: 'solid', a: '#4bc0cd', b: '#2b4764', scale: 1 },
+  shape: 'square', airpods: false, glint: true, shirt: null, frame: null, transparent: false
+};
+const clone = o => JSON.parse(JSON.stringify(o));
+let state = clone(DEFAULT);
+const ex = { fmt: 'png', mult: 10, anim: 'vivo' };
+const STORE = 'antonio-avatar-studio-v1';
+
+function sanitize(c) {
+  const s = clone(DEFAULT);
+  if (!c || typeof c !== 'object') return s;
+  if (E.expr[c.expr]) s.expr = c.expr;
+  if (c.bg && typeof c.bg === 'object') {
+    if (PATTERNS.some(p => p.id === c.bg.pattern)) s.bg.pattern = c.bg.pattern;
+    if (isHex(c.bg.a)) s.bg.a = c.bg.a.toLowerCase();
+    if (isHex(c.bg.b)) s.bg.b = c.bg.b.toLowerCase();
+    if ([1, 2, 3, 4].includes(c.bg.scale)) s.bg.scale = c.bg.scale;
+  }
+  if (SHAPES.some(x => x.id === c.shape)) s.shape = c.shape;
+  for (const k of ['airpods', 'glint', 'transparent']) if (typeof c[k] === 'boolean') s[k] = c[k];
+  for (const k of ['shirt', 'frame']) if (isHex(c[k])) s[k] = c[k].toLowerCase();
+  return s;
+}
+try { const saved = localStorage.getItem(STORE); if (saved) state = sanitize(JSON.parse(saved)); } catch (e) {}
+
+/* ---------- Export: formats ---------- */
+const FORMATS = [
+  { id: 'png', name: 'PNG', ext: 'png', hint: 'Imagen sin pérdida. La mejor opción para redes y web.' },
+  { id: 'svg', name: 'SVG', ext: 'svg', hint: 'Vector: un rectángulo por cada tramo de píxeles. Escala sin límite en web e impresión.' },
+  { id: 'webp', name: 'WebP', ext: 'webp', hint: 'Más ligero que PNG. Safari antiguo puede no generarlo.' },
+  { id: 'jpg', name: 'JPG', ext: 'jpg', hint: 'Sin transparencia. Las zonas vacías se rellenan con el color A.' },
+  { id: 'gif', name: 'GIF animado', ext: 'gif', hint: 'Bucle infinito. GIF solo tiene transparencia de 1 bit: el borde de las formas redondas queda sin suavizar. Para bordes suaves, usa fondo cuadrado.' },
+  { id: 'zip', name: 'Pack ZIP', ext: 'zip', hint: 'Las 7 caras en PNG normal, transparente y como pegatina de 512 px, favicon.ico, iconos de app, 3 GIF, SVG y tu configuración.' },
+  { id: 'json', name: 'Configuración', ext: 'json', hint: 'Guarda esta combinación para cargarla otro día.' }
+];
+const MULTS = [1, 2, 4, 8, 10, 16, 20, 32];
+const glintFrames = () => Array.from({ length: 16 }, (_, i) => [{ gp: i - 2 }, 40]);
+const ANIMS = [
+  { id: 'vivo', name: 'Vivo', frames: s => [
+    [{}, 1800], [{ blink: true }, 110], [{}, 1200], [{ look: -1 }, 650], [{}, 250], [{ look: 1 }, 650], [{}, 900],
+    ...(s.glint ? glintFrames() : []), [{}, 1000], [{ blink: true }, 100], [{}, 140], [{ blink: true }, 100], [{}, 1600]] },
+  { id: 'parpadeo', name: 'Parpadeo', frames: () => [[{}, 2400], [{ blink: true }, 120]] },
+  { id: 'guino', name: 'Guiño', frames: () => [[{ expr: 'normal' }, 1400], [{ expr: 'wink' }, 900]] },
+  { id: 'mirada', name: 'Mirada', frames: () => [[{}, 800], [{ look: -1 }, 700], [{}, 300], [{ look: 1 }, 700]] },
+  { id: 'brillo', name: 'Brillo', frames: () => [[{}, 1500], ...glintFrames()] },
+  { id: 'caras', name: 'Todas las caras', frames: () => Object.keys(E.expr).map(id => [{ expr: id }, 900]) }
+];
+const still = s => ({ ...s, blink: false, look: 0, gp: -99 });
+const dims = outSize;
+
+function scaled(img, k, fill) {
+  const c = document.createElement('canvas'); c.width = img.width * k; c.height = img.height * k;
+  const x = c.getContext('2d');
+  if (fill) { x.fillStyle = fill; x.fillRect(0, 0, c.width, c.height); }
+  x.imageSmoothingEnabled = false;
+  x.drawImage(canvasOf(img), 0, 0, c.width, c.height);
+  return c;
+}
+function cropImg(img, x, y, w, h) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const ctx = c.getContext('2d'); ctx.drawImage(canvasOf(img), x, y, w, h, 0, 0, w, h);
+  return ctx.getImageData(0, 0, w, h);
+}
+const toBlob = (c, type, q) => new Promise((res, rej) =>
+  c.toBlob(b => b ? res(b) : rej(new Error('El navegador no generó la imagen.')), type, q));
+
+function toSVG(s, k) {
+  const img = compose(s), sticker = s.shape === 'sticker';
+  const { width: w, height: h, data: d } = img;
+  const parts = [];
+  for (let y = 0; y < h; y++) {
+    let x = 0;
+    while (x < w) {
+      const i = (y * w + x) * 4;
+      if (!d[i + 3]) { x++; continue; }
+      let x2 = x + 1;
+      while (x2 < w) { const j = (y * w + x2) * 4; if (d[j] !== d[i] || d[j + 1] !== d[i + 1] || d[j + 2] !== d[i + 2] || d[j + 3] !== d[i + 3]) break; x2++; }
+      const a = d[i + 3];
+      parts.push(`<rect x="${x}" y="${y}" width="${x2 - x}" height="1" fill="${toHex([d[i], d[i + 1], d[i + 2]])}"${a < 255 ? ` fill-opacity="${(a / 255).toFixed(2)}"` : ''}/>`);
+      x = x2;
+    }
+  }
+  const px = `<g shape-rendering="crispEdges">${parts.join('')}</g>`;
+  const V = sticker ? 56 : 48;
+  let body = px;
+  if (sticker) body = `<defs><filter id="outline" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">` +
+    `<feMorphology in="SourceAlpha" operator="dilate" radius="1.7" result="d"/><feGaussianBlur in="d" stdDeviation=".45" result="b"/>` +
+    `<feComponentTransfer in="b" result="m"><feFuncA type="linear" slope="3" intercept="-1"/></feComponentTransfer>` +
+    `<feFlood flood-color="#ffffff"/><feComposite in2="m" operator="in" result="w"/>` +
+    `<feMerge><feMergeNode in="w"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>` +
+    `<g transform="translate(4 4)" filter="url(#outline)">${px}</g>`;
+  else if (s.shape !== 'square') body = `<defs><clipPath id="shape">${svgClip(s.shape)}</clipPath></defs><g clip-path="url(#shape)">${px}</g>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${V * k}" height="${V * k}" viewBox="0 0 ${V} ${V}">${body}</svg>`;
+}
+
+/* GIF89a encoder with global palette, LZW and infinite loop */
+function lzw(minCodeSize, idx) {
+  const out = []; let cur = 0, shift = 0;
+  const clear = 1 << minCodeSize, eoi = clear + 1;
+  let next = eoi + 1, size = minCodeSize + 1, table = new Map();
+  const emit = c => { cur |= c << shift; shift += size; while (shift >= 8) { out.push(cur & 255); cur >>>= 8; shift -= 8; } };
+  emit(clear);
+  let code = idx[0];
+  for (let i = 1; i < idx.length; i++) {
+    const k = idx[i], key = (code << 8) | k, v = table.get(key);
+    if (v === undefined) {
+      emit(code);
+      if (next === 4096) { emit(clear); next = eoi + 1; size = minCodeSize + 1; table = new Map(); }
+      else { if (next >= (1 << size)) size++; table.set(key, next++); }
+      code = k;
+    } else code = v;
+  }
+  emit(code); emit(eoi);
+  if (shift > 0) out.push(cur & 255);
+  return out;
+}
+function encodeGIF(imgs, delays, k, transparent) {
+  const w = imgs[0].width, h = imgs[0].height, W = w * k, H = h * k;
+  let pal, frames;
+  for (const q of [0, 2, 3, 4]) {
+    const map = new Map(); pal = transparent ? [[0, 0, 0]] : [];
+    let over = false;
+    frames = imgs.map(img => {
+      const d = img.data, idx = new Uint8Array(w * h);
+      for (let p = 0; p < w * h && !over; p++) {
+        const i = p * 4;
+        if (transparent && d[i + 3] < 128) { idx[p] = 0; continue; }
+        const r = d[i] >> q << q, g = d[i + 1] >> q << q, b = d[i + 2] >> q << q, key = (r << 16) | (g << 8) | b;
+        let v = map.get(key);
+        if (v === undefined) { if (pal.length >= 256) { over = true; break; } v = pal.length; pal.push([r, g, b]); map.set(key, v); }
+        idx[p] = v;
+      }
+      return idx;
+    });
+    if (!over) break;
+  }
+  let bits = 1; while ((1 << bits) < pal.length) bits++;
+  const minCode = Math.max(2, bits);
+  const bytes = [];
+  const u16 = v => bytes.push(v & 255, (v >> 8) & 255);
+  bytes.push(...[...'GIF89a'].map(c => c.charCodeAt(0)));
+  u16(W); u16(H); bytes.push(0xF0 | (bits - 1), 0, 0);
+  for (let i = 0; i < (1 << bits); i++) bytes.push(...(pal[i] || [0, 0, 0]));
+  bytes.push(0x21, 0xFF, 0x0B, ...[...'NETSCAPE2.0'].map(c => c.charCodeAt(0)), 3, 1, 0, 0, 0);
+  const chunks = [new Uint8Array(bytes)];
+  frames.forEach((idx, f) => {
+    const big = new Uint8Array(W * H);
+    for (let y = 0; y < H; y++) { const sr = ((y / k) | 0) * w, dr = y * W; for (let x = 0; x < W; x++) big[dr + x] = idx[sr + ((x / k) | 0)]; }
+    const cs = Math.max(2, Math.round(delays[f] / 10));
+    const head = [0x21, 0xF9, 4, ((transparent ? 2 : 1) << 2) | (transparent ? 1 : 0), cs & 255, cs >> 8, 0, 0,
+      0x2C, 0, 0, 0, 0, W & 255, W >> 8, H & 255, H >> 8, 0, minCode];
+    const data = lzw(minCode, big);
+    const body = new Uint8Array(data.length + Math.ceil(data.length / 255) + 1);
+    let p = 0;
+    for (let i = 0; i < data.length; i += 255) {
+      const n = Math.min(255, data.length - i);
+      body[p++] = n; body.set(data.slice(i, i + n), p); p += n;
+    }
+    body[p++] = 0;
+    chunks.push(new Uint8Array(head), body.subarray(0, p));
+  });
+  chunks.push(new Uint8Array([0x3B]));
+  return new Blob(chunks, { type: 'image/gif' });
+}
+function gifFor(s, animId, k, transparent) {
+  const an = ANIMS.find(a => a.id === animId) || ANIMS[0];
+  const fr = an.frames(s);
+  const imgs = fr.map(([o]) => {
+    const c = renderScaled({ ...still({ ...s, transparent }), ...o }, k);
+    return c.getContext('2d').getImageData(0, 0, c.width, c.height);
+  });
+  return encodeGIF(imgs, fr.map(f => f[1]), 1, transparent || s.shape !== 'square');
+}
+
+async function makeICO(entries) {
+  const bufs = await Promise.all(entries.map(e => e.blob.arrayBuffer()));
+  const n = bufs.length, head = new DataView(new ArrayBuffer(6 + 16 * n));
+  head.setUint16(2, 1, true); head.setUint16(4, n, true);
+  let off = 6 + 16 * n;
+  bufs.forEach((b, i) => {
+    const o = 6 + 16 * i, s = entries[i].size;
+    head.setUint8(o, s >= 256 ? 0 : s); head.setUint8(o + 1, s >= 256 ? 0 : s);
+    head.setUint16(o + 4, 1, true); head.setUint16(o + 6, 32, true);
+    head.setUint32(o + 8, b.byteLength, true); head.setUint32(o + 12, off, true);
+    off += b.byteLength;
+  });
+  return new Blob([head.buffer, ...bufs], { type: 'image/x-icon' });
+}
+function exportConfig() { return JSON.stringify({ app: 'antonio-en-pixeles', version: 1, ...state }, null, 2); }
+
+async function buildPack() {
+  if (!window.JSZip) throw new Error('No se pudo cargar el compresor ZIP.');
+  const zip = new JSZip(), base = still(state);
+  for (const id of Object.keys(E.expr)) {
+    zip.file(`expresiones/${id}.png`, await toBlob(renderScaled({ ...base, expr: id, transparent: false, shape: base.shape === 'sticker' ? 'square' : base.shape }, 10), 'image/png'));
+    zip.file(`transparente/${id}.png`, await toBlob(renderScaled({ ...base, expr: id, transparent: true, shape: 'square' }, 10), 'image/png'));
+    const st = renderScaled({ ...base, expr: id, shape: 'sticker' }, 9);
+    const c = document.createElement('canvas'); c.width = c.height = 512;
+    c.getContext('2d').drawImage(st, 4, 4);
+    zip.file(`pegatinas/${id}.png`, await toBlob(c, 'image/png'));
+  }
+  const sq = compose({ ...base, shape: 'square', transparent: false });
+  const head32 = cropImg(sq, 8, 2, 32, 32), head36 = cropImg(sq, 6, 0, 36, 36);
+  const c16 = document.createElement('canvas'); c16.width = c16.height = 16;
+  const x16 = c16.getContext('2d'); x16.imageSmoothingQuality = 'high'; x16.drawImage(canvasOf(head32), 0, 0, 16, 16);
+  const p16 = await toBlob(c16, 'image/png'), p32 = await toBlob(scaled(head32, 1), 'image/png'), p64 = await toBlob(scaled(head32, 2), 'image/png');
+  zip.file('favicon/favicon.ico', await makeICO([{ size: 16, blob: p16 }, { size: 32, blob: p32 }, { size: 64, blob: p64 }]));
+  zip.file('favicon/favicon-32.png', p32);
+  zip.file('favicon/apple-touch-icon.png', await toBlob(scaled(head36, 5), 'image/png'));
+  zip.file('favicon/icon-192.png', await toBlob(scaled(sq, 4), 'image/png'));
+  zip.file('favicon/icon-512.png', await toBlob(scaled(head32, 16), 'image/png'));
+  zip.file('animado/vivo.gif', gifFor(state, 'vivo', 8, false));
+  zip.file('animado/parpadeo.gif', gifFor(state, 'parpadeo', 4, false));
+  zip.file('animado/caras.gif', gifFor(state, 'caras', 4, false));
+  zip.file('avatar.svg', toSVG(base, 10));
+  zip.file('config.json', exportConfig());
+  zip.file('LEEME.txt', [
+    'Pack de avatar · Antonio en píxeles', '',
+    'expresiones/   7 caras a 480 px con tu fondo y tu forma',
+    'transparente/  7 caras a 480 px sin fondo',
+    'pegatinas/     7 pegatinas de 512 px con borde blanco',
+    'favicon/       favicon.ico (16, 32, 64), favicon-32.png, apple-touch-icon.png (180), icon-192.png, icon-512.png',
+    'animado/       vivo.gif, parpadeo.gif, caras.gif',
+    'avatar.svg     vector a 480 px', 'config.json    carga este archivo en el estudio para recuperar la combinación', '',
+    'HTML para el favicon:',
+    '<link rel="icon" href="/favicon.ico" sizes="any">',
+    '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">',
+    '<link rel="apple-touch-icon" href="/apple-touch-icon.png">'
+  ].join('\n'));
+  return zip.generateAsync({ type: 'blob' });
+}
+
+function fileName() {
+  const f = FORMATS.find(x => x.id === ex.fmt);
+  if (ex.fmt === 'zip') return 'antonio-avatar-pack.zip';
+  if (ex.fmt === 'json') return 'antonio-avatar.json';
+  const px = dims(state, ex.mult);
+  if (ex.fmt === 'gif') return `antonio-${ex.anim}-${px}.gif`;
+  return `antonio-${state.expr}-${px}.${f.ext}`;
+}
+async function buildFile() {
+  const s = still(state);
+  switch (ex.fmt) {
+    case 'png': return toBlob(renderScaled(s, ex.mult), 'image/png');
+    case 'webp': {
+      const b = await toBlob(renderScaled(s, ex.mult), 'image/webp', 0.95);
+      if (b.type !== 'image/webp') throw new Error('Este navegador no genera WebP. Elige PNG.');
+      return b;
+    }
+    case 'jpg': return toBlob(renderScaled({ ...s, transparent: false }, ex.mult, state.bg.a), 'image/jpeg', 0.95);
+    case 'svg': return new Blob([toSVG(s, ex.mult)], { type: 'image/svg+xml' });
+    case 'gif': return gifFor(state, ex.anim, ex.mult, state.transparent);
+    case 'zip': return buildPack();
+    case 'json': return new Blob([exportConfig()], { type: 'application/json' });
+  }
+}
+
+/* Saving: the downloads capability inside Claude, a normal download elsewhere */
+const dlReady = (async () => {
+  try { return window.claude && window.claude.use ? await window.claude.use('downloads') : undefined; }
+  catch (e) { return null; }
+})();
+const statusEl = document.getElementById('status');
+function status(msg, kind = '') { statusEl.textContent = msg; statusEl.className = 'status' + (kind ? ' ' + kind : ''); }
+const kb = n => n < 1024 * 1024 ? Math.max(1, Math.round(n / 1024)) + ' KB' : (n / 1048576).toFixed(1) + ' MB';
+async function saveFile(name, blob) {
+  const dl = await dlReady;
+  if (dl === undefined) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    status(`Descargado: ${name} (${kb(blob.size)})`, 'ok');
+    return;
+  }
+  if (!dl) { status('Las descargas no están disponibles en esta vista. Abre la página en claude.ai.', 'err'); return; }
+  try {
+    await dl.save({ filename: name, data: blob });
+    status(`Guardado: ${name} (${kb(blob.size)})`, 'ok');
+  } catch (e) {
+    const code = e && e.code;
+    if (code === 'declined') status('Descarga cancelada.');
+    else if (code === 'rate_limited') status('Ya hay una descarga esperando confirmación. Espera unos segundos.', 'err');
+    else if (code === 'too_large') status('El archivo es demasiado grande. Elige un tamaño menor.', 'err');
+    else status('No se pudo guardar el archivo en esta vista.', 'err');
+  }
+}
+
+/* ---------- UI ---------- */
+const $ = id => document.getElementById(id);
+function chip(label, pressed, onClick, extra) {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'chip';
+  if (extra) b.append(extra);
+  b.append(document.createTextNode(label));
+  b.setAttribute('aria-pressed', pressed); b.addEventListener('click', onClick);
+  return b;
+}
+function commit() {
+  try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {}
+  sync();
+}
+
+const avatars = [];
+avatars.push(new Avatar($('hero'), () => state, { follow: true }));
+
+/* Expression strip under the preview */
+const stripButtons = Object.entries(E.expr).map(([id, e]) => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.dataset.id = id;
+  const cv = document.createElement('canvas'); cv.className = 'px'; cv.width = cv.height = 48; cv.setAttribute('aria-hidden', 'true');
+  b.append(cv, document.createTextNode(e.name));
+  b.addEventListener('click', () => { state.expr = id; commit(); });
+  $('strip').append(b);
+  avatars.push(new Avatar(cv, () => ({ ...state, expr: id, transparent: false, shape: state.shape === 'sticker' ? 'rounded' : state.shape })));
+  return b;
+});
+
+function sync() {
+  /* Face */
+  $('exprChips').replaceChildren(...Object.entries(E.expr).map(([id, e]) =>
+    chip(e.name, state.expr === id, () => { state.expr = id; commit(); })));
+  stripButtons.forEach(b => b.setAttribute('aria-pressed', b.dataset.id === state.expr));
+  $('tAirpods').setAttribute('aria-pressed', state.airpods);
+  $('tGlint').setAttribute('aria-pressed', state.glint);
+
+  /* Background */
+  $('presets').replaceChildren(...PRESETS.map(p => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'swatch'; b.title = p.name; b.setAttribute('aria-label', p.name);
+    const on = state.bg.pattern === p.pattern && state.bg.a === p.a && (p.pattern === 'solid' || state.bg.b === p.b);
+    b.setAttribute('aria-pressed', on);
+    const cv = document.createElement('canvas'); cv.width = cv.height = 12;
+    paintBg(cv.getContext('2d'), 12, 12, { ...p, scale: 1 });
+    b.append(cv);
+    b.addEventListener('click', () => { state.bg = { pattern: p.pattern, a: p.a, b: p.b, scale: 1 }; commit(); });
+    return b;
+  }));
+  $('patterns').replaceChildren(...PATTERNS.map(p => {
+    const cv = document.createElement('canvas'); cv.width = cv.height = 16;
+    paintBg(cv.getContext('2d'), 16, 16, { ...state.bg, pattern: p.id, scale: 1 });
+    return chip(p.name, state.bg.pattern === p.id, () => { state.bg.pattern = p.id; commit(); }, cv);
+  }));
+  const solid = state.bg.pattern === 'solid';
+  $('rowB').hidden = solid; $('swapAB').hidden = solid;
+  $('rowScale').hidden = solid || ['dither', 'rays'].includes(state.bg.pattern) && false;
+  setColor('A', state.bg.a); setColor('B', state.bg.b);
+  $('scale').value = state.bg.scale; $('scaleVal').textContent = '×' + state.bg.scale;
+
+  /* Clothes */
+  setColor('Shirt', state.shirt || ORIG_SHIRT); setColor('Frame', state.frame || ORIG_FRAME);
+  $('resetShirt').hidden = !state.shirt; $('resetFrame').hidden = !state.frame;
+
+  /* Shape */
+  $('shapeChips').replaceChildren(...SHAPES.map(sh => chip(sh.name, state.shape === sh.id, () => { state.shape = sh.id; commit(); })));
+  $('stage').classList.toggle('checker', state.transparent || state.shape === 'sticker');
+
+  /* Export */
+  $('fmtChips').replaceChildren(...FORMATS.map(f => chip(f.name, ex.fmt === f.id, () => { ex.fmt = f.id; sync(); })));
+  $('sizeChips').replaceChildren(...MULTS.map(m => chip(`${dims(state, m)} px`, ex.mult === m, () => { ex.mult = m; sync(); })));
+  $('animChips').replaceChildren(...ANIMS.map(a => chip(a.name, ex.anim === a.id, () => { ex.anim = a.id; sync(); })));
+  const noSize = ex.fmt === 'zip' || ex.fmt === 'json';
+  $('rowSize').hidden = noSize;
+  $('rowAnim').hidden = ex.fmt !== 'gif';
+  $('rowTransp').hidden = noSize || ex.fmt === 'jpg' || state.shape === 'sticker';
+  $('tTransp').setAttribute('aria-pressed', state.transparent);
+  $('fmtHint').textContent = FORMATS.find(f => f.id === ex.fmt).hint;
+  $('goName').textContent = fileName();
+  $('dimLabel').textContent = noSize ? '' : `${dims(state, ex.mult)} × ${dims(state, ex.mult)} px · ×${ex.mult}`;
+
+  drawStatic();
+}
+
+function setColor(key, hex) {
+  const inp = $('col' + key), txt = $('hex' + key);
+  if (inp.value !== hex) inp.value = hex;
+  if (document.activeElement !== txt) { txt.value = hex; txt.removeAttribute('aria-invalid'); }
+}
+function bindColor(key, apply) {
+  const inp = $('col' + key), txt = $('hex' + key);
+  inp.addEventListener('input', () => { apply(inp.value.toLowerCase()); commit(); });
+  txt.addEventListener('input', () => {
+    let v = txt.value.trim().toLowerCase(); if (v && v[0] !== '#') v = '#' + v;
+    if (isHex(v)) { txt.removeAttribute('aria-invalid'); apply(v); commit(); }
+    else txt.setAttribute('aria-invalid', 'true');
+  });
+  txt.addEventListener('blur', () => sync());
+}
+bindColor('A', v => state.bg.a = v);
+bindColor('B', v => state.bg.b = v);
+bindColor('Shirt', v => state.shirt = v);
+bindColor('Frame', v => state.frame = v);
+$('resetShirt').addEventListener('click', () => { state.shirt = null; commit(); });
+$('resetFrame').addEventListener('click', () => { state.frame = null; commit(); });
+$('scale').addEventListener('input', () => { state.bg.scale = +$('scale').value; commit(); });
+$('swapAB').addEventListener('click', () => { const t = state.bg.a; state.bg.a = state.bg.b; state.bg.b = t; commit(); });
+$('randomBg').addEventListener('click', () => {
+  const h = Math.floor(Math.random() * 360), dark = Math.random() < .3;
+  const pats = PATTERNS.filter(p => p.id !== 'solid');
+  state.bg = {
+    pattern: pats[Math.floor(Math.random() * pats.length)].id,
+    a: dark ? hsl(h, 35, 16) : hsl(h, 70, 64),
+    b: dark ? hsl((h + 40) % 360, 70, 60) : hsl((h + 25) % 360, 65, 52),
+    scale: 1 + Math.floor(Math.random() * 2)
+  };
+  commit();
+});
+$('tAirpods').addEventListener('click', () => { state.airpods = !state.airpods; commit(); });
+$('tGlint').addEventListener('click', () => { state.glint = !state.glint; commit(); });
+$('tTransp').addEventListener('click', () => { state.transparent = !state.transparent; commit(); });
+$('resetAll').addEventListener('click', () => { state = clone(DEFAULT); commit(); status('Configuración original restaurada.'); });
+$('importCfg').addEventListener('change', e => {
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try { state = sanitize(JSON.parse(r.result)); commit(); status(`Configuración cargada: ${f.name}`, 'ok'); }
+    catch (err) { status('El archivo no es una configuración válida.', 'err'); }
+    e.target.value = '';
+  };
+  r.readAsText(f);
+});
+$('go').addEventListener('click', async () => {
+  const btn = $('go'), name = fileName();
+  btn.disabled = true; status('Generando ' + name + '…');
+  try { const blob = await buildFile(); await saveFile(name, blob); }
+  catch (err) { status(err.message || 'No se pudo generar el archivo.', 'err'); }
+  btn.disabled = false;
+});
+
+/* ---------- Context mockups ---------- */
+avatars.push(new Avatar($('profilePic'), () => ({ ...state, shape: 'circle', transparent: false })));
+avatars.push(new Avatar($('err'), () => ({ ...state, expr: 'surprise', shape: state.shape === 'sticker' ? 'rounded' : state.shape, transparent: false })));
+let staticKey = '';
+function drawStatic() {
+  const key = JSON.stringify(state);
+  if (key === staticKey) return;
+  staticKey = key;
+  paintBg($('banner').getContext('2d'), 96, 32, state.bg);
+  const sq = compose(still({ ...state, shape: 'square', transparent: false }));
+  const head = canvasOf(cropImg(sq, 8, 2, 32, 32));
+  for (const id of ['fav16', 'fav32', 'fav32b']) {
+    const ctx = $(id).getContext('2d');
+    ctx.clearRect(0, 0, 32, 32); ctx.imageSmoothingEnabled = false; ctx.drawImage(head, 0, 0);
+  }
+}
+
+sync();
+function loop(t) { for (const a of avatars) a.tick(t); requestAnimationFrame(loop); }
+requestAnimationFrame(loop);
+</script>
+
+</body>
+</html>

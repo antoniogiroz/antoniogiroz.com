@@ -1,0 +1,57 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PixelAvatar from '../components/PixelAvatar.astro';
+import { useTranslations } from '../i18n/ui';
+
+const t = useTranslations('es');
+const en = useTranslations('en');
+---
+
+<Layout lang="es" title={t('404.title')} alternate="/en/" ownAvatar>
+  <section class="wrap page">
+    <PixelAvatar lang="es" size="clamp(160px, 24vw, 260px)" expr="surprise" follow bubbleSide="top" vt />
+    <div class="text">
+      <p class="code">404</p>
+      <h1>{t('404.title')}</h1>
+      <p>{t('404.body')}</p>
+      <p class="en" lang="en">{en('404.title')}. {en('404.body')}</p>
+      <a class="btn" href="/" data-mood="grin">{t('404.back')}</a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .page {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 48px;
+    padding-block: clamp(64px, 12vw, 160px);
+  }
+  .text {
+    display: grid;
+    gap: 14px;
+    justify-items: start;
+    max-width: 44ch;
+  }
+  .code {
+    font: 400 clamp(56px, 9vw, 112px) / 1 var(--pixel);
+    color: var(--brand-ink);
+  }
+  h1 {
+    font-size: clamp(32px, 4.6vw, 52px);
+  }
+  .en {
+    color: var(--ink-2);
+    font-size: 15px;
+  }
+  .btn {
+    margin-top: 8px;
+    padding: 13px 20px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    font-weight: 600;
+  }
+</style>

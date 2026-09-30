@@ -1,55 +1,53 @@
-# Astro Starter Kit: Basics
+# antoniogiroz.com
 
-```
-npm create astro@latest -- --template basics
-```
+Personal site of Antonio Giroz. Built with Astro 7, in Spanish (`/`) and English (`/en`).
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+## Commands
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+| Command        | Action                                        |
+| :------------- | :-------------------------------------------- |
+| `pnpm install` | Install dependencies                          |
+| `pnpm dev`     | Start the dev server at `localhost:4321`      |
+| `pnpm build`   | Build the static site                         |
+| `pnpm check`   | Type-check the project                        |
 
-![basics](https://user-images.githubusercontent.com/4677417/186188965-73453154-fdec-4d6b-9c34-cb35c248ae5b.png)
+## Structure
 
+- `src/avatar/` — the live pixel avatar. `engine.ts` draws the 48 × 48 grid; `element.ts` defines `<pixel-avatar>`.
+- `src/avatar/data/` — the avatar pixels and the expression patches.
+- `src/i18n/ui.ts` — all interface texts in both languages.
+- `src/views/` — page content, shared by the Spanish and English routes in `src/pages/`.
+- `src/content/` — blog posts (`blog/es`, `blog/en`), apps (`projects.yaml`) and the `/uses` page (`uses.yaml`).
 
-## 🚀 Project Structure
+## The avatar
 
-Inside of your Astro project, you'll see the following folders and files:
+Add `data-mood` to any element to make the avatar react on hover and focus:
 
-```
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
+```html
+<a href="/uses" data-mood="grin" data-say="My gear">Uses</a>
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Moods: `smile`, `grin`, `wink`, `surprise`, `tongue`, `sleep`. Every avatar changes its face, but only one says the line: the one you can see (the one in the page first, then the one in the header). Sections with `data-narrate` get one line when they come into view.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Between 01:00 and 07:00 (Madrid time) the hero avatar sleeps; a click wakes it up. On the home page it flies into the header when you scroll past it, and the sun in the hero follows the time in Madrid.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Design rule
 
-## 🧞 Commands
+Antonio is made of pixels, the world is soft and the interface is glass:
 
-All commands are run from the root of the project, from a terminal:
+- Pixels: the avatar, its speech bubble, the creatures in the sky and the app icons.
+- Soft: sky, hills and light, never behind a headline.
+- Glass: what floats (the header).
+- Nothing empty in production: a section exists when it has content.
 
-| Command                | Action                                           |
-| :--------------------- | :----------------------------------------------- |
-| `npm install`          | Installs dependencies                            |
-| `npm run dev`          | Starts local dev server at `localhost:3000`      |
-| `npm run build`        | Build your production site to `./dist/`          |
-| `npm run preview`      | Preview your build locally, before deploying     |
-| `npm run astro ...`    | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro --help` | Get help using the Astro CLI                     |
+## Avatar studio
 
-## 👀 Want to learn more?
+`/avatar/` (`public/avatar/`) is a private tool to change the avatar and export it (PNG, SVG, GIF, sticker pack). It is not linked from the site and asks search engines not to index it.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## Hidden sections
+
+`src/config.ts` switches sections on and off. Apps and the blog are off until there is something to show.
+
+## Blog
+
+Posts with `draft: true` show only in `pnpm dev`. Posts in both languages share a `translationKey`, so the language switch links to the translation.

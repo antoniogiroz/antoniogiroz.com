@@ -1,0 +1,412 @@
+---
+import PixelAvatar from './PixelAvatar.astro';
+import { Icon } from 'astro-icon/components';
+import { localePath, useTranslations, type Lang } from '../i18n/ui';
+import { getPosts } from '../lib/posts';
+import { features } from '../config';
+
+interface Props {
+  lang: Lang;
+  alternate: string;
+  /** The home hero avatar flies into this spot instead of a mini avatar */
+  dock?: boolean;
+  /** The header avatar travels between pages (off when the page has its own big avatar) */
+  avatarVt?: boolean;
+}
+
+const { lang, alternate, dock = false, avatarVt = true } = Astro.props;
+const t = useTranslations(lang);
+const home = localePath(lang, '/');
+const links = [
+  ...(features.apps ? [{ href: `${home}#apps`, label: t('nav.apps') }] : []),
+  { href: `${home}#stack`, label: t('nav.stack') },
+  { href: localePath(lang, '/uses'), label: t('nav.uses') },
+  // Nothing empty in production: Notes appears once there is a note
+  ...((await getPosts(lang)).length ? [{ href: localePath(lang, '/blog'), label: t('nav.blog') }] : []),
+];
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+---
+
+<a class="skip" href="#content">{t('nav.skip')}</a>
+<header class="site-header">
+  <div class="wrap">
+  <div class="bar glass" data-glass>
+    <a class="brand" href={home} data-mood="smile">
+      {dock ? <span class="dock" data-avatar-to aria-hidden="true" /> : <PixelAvatar lang={lang} size="34px" bubbleSide="below" vt={avatarVt} class="mini" />}
+      <span>antonio giroz</span>
+    </a>
+    <nav id="site-nav" aria-label={t('nav.label')}>
+      <ul>
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} aria-current={current === l.href.replace(/\/$/, '') ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <button
+      class="theme"
+      type="button"
+      data-theme-toggle
+      data-to-dark={t('theme.toDark')}
+      data-to-light={t('theme.toLight')}
+      aria-label={t('theme.toDark')}
+    >
+      <svg class="sky-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <mask id="moon-bite">
+          <rect width="24" height="24" fill="#fff" />
+          <circle class="bite" cx="17" cy="7" r="7.5" fill="#000" />
+        </mask>
+        <circle class="core" cx="12" cy="12" r="8.5" mask="url(#moon-bite)" />
+        <g class="rays">
+          {Array.from({ length: 8 }, (_, i) => <line x1="12" y1="1.6" x2="12" y2="4" transform={`rotate(${i * 45} 12 12)`} />)}
+        </g>
+      </svg>
+    </button>
+    <a class="lang" href={alternate} hreflang={lang === 'es' ? 'en' : 'es'} lang={lang === 'es' ? 'en' : 'es'} data-mood="wink" data-say={t('lang.switch')}>
+      <span aria-hidden="true">{lang === 'es' ? 'EN' : 'ES'}</span>
+      <span class="visually-hidden">{t('lang.switch')}</span>
+    </a>
+    <button class="menu" type="button" aria-expanded="false" aria-controls="site-nav" data-open-label={t('nav.menu')} data-close-label={t('nav.close')} aria-label={t('nav.menu')}>
+      <Icon name="ri:menu-line" class="open" aria-hidden="true" />
+      <Icon name="ri:close-line" class="close" aria-hidden="true" />
+    </button>
+  </div>
+  </div>
+</header>
+
+<script>
+  const root = document.documentElement;
+  const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const system = matchMedia('(prefers-color-scheme: dark)');
+
+  const stored = () => {
+    try {
+      return localStorage.getItem('theme');
+    } catch {
+      return null;
+    }
+  };
+
+  function apply(theme: 'dark' | 'light', announce = true) {
+    root.dataset.theme = theme;
+    meta?.setAttribute('content', theme === 'dark' ? '#0b151c' : '#e3eff1');
+    if (toggle) {
+      toggle.setAttribute('aria-label', toggle.dataset[theme === 'dark' ? 'toLight' : 'toDark'] ?? '');
+      toggle.setAttribute('aria-pressed', String(theme === 'dark'));
+    }
+    if (announce) document.dispatchEvent(new CustomEvent('theme:change', { detail: { theme } }));
+  }
+
+  apply(root.dataset.theme === 'dark' ? 'dark' : 'light', false);
+
+  // Phones: the navigation folds into the capsule behind a menu button
+  const bar = document.querySelector<HTMLElement>('.site-header .bar');
+  const menu = document.querySelector<HTMLButtonElement>('.site-header .menu');
+  const setOpen = (open: boolean) => {
+    bar?.toggleAttribute('data-open', open);
+    menu?.setAttribute('aria-expanded', String(open));
+    menu?.setAttribute('aria-label', (open ? menu.dataset.closeLabel : menu.dataset.openLabel) ?? '');
+  };
+  menu?.addEventListener('click', () => setOpen(!bar?.hasAttribute('data-open')));
+  document.querySelectorAll('#site-nav a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
+
+  // Follow the system until the visitor picks a theme
+  system.addEventListener('change', (e) => {
+    if (!stored()) apply(e.matches ? 'dark' : 'light');
+  });
+
+  toggle?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      /* private mode: the choice lasts for this page only */
+    }
+    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      apply(next);
+      return;
+    }
+    // The new theme opens as a circle from the toggle and covers the screen
+    const r = toggle.getBoundingClientRect();
+    const x = r.left + r.width / 2;
+    const y = r.top + r.height / 2;
+    const end = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    root.classList.add('theme-switching');
+    // Avatars redraw synchronously on theme:change, so the new snapshot has the new sky
+    const transition = document.startViewTransition(() => apply(next));
+    transition.ready
+      .then(() => {
+        root.animate(
+          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${end}px at ${x}px ${y}px)`] },
+          { duration: 800, easing: 'cubic-bezier(0.65, 0, 0.35, 1)', pseudoElement: '::view-transition-new(root)' },
+        );
+      })
+      .catch(() => {
+        /* The browser skipped the animation; the theme is already applied */
+      });
+    transition.finished.finally(() => root.classList.remove('theme-switching'));
+  });
+</script>
+
+<style>
+  .skip {
+    position: absolute;
+    left: 12px;
+    top: -60px;
+    z-index: 20;
+    padding: 10px 14px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+  }
+  .skip:focus {
+    top: 12px;
+  }
+  /* A floating glass capsule over the page; the hero sky runs underneath it */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    height: var(--header-h);
+    margin-bottom: calc(-1 * var(--header-h));
+    padding-top: 12px;
+    box-sizing: border-box;
+    pointer-events: none;
+  }
+  /*
+   * Scroll edge effect, as in iOS 26 and 27: content that scrolls under the bar
+   * gets a progressive blur and fades, so the glass stays readable over any text.
+   */
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 -28px;
+    z-index: -1;
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--paper) 70%, transparent), transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent);
+    mask-image: linear-gradient(to bottom, #000 40%, transparent);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+  :global(html[data-scrolled]) .site-header::before {
+    opacity: 1;
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 12px 20px;
+    min-height: 60px;
+    padding: 8px 10px 8px 14px;
+    border-radius: 999px;
+    box-sizing: border-box;
+    pointer-events: auto;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    font: 700 19px/1 var(--display);
+    letter-spacing: -0.02em;
+    margin-right: auto;
+  }
+  /* The mini avatar talks with a bubble hanging below the glass capsule */
+  .brand :global(.mini[data-side='below'] .bubble) {
+    top: calc(100% + 24px);
+  }
+  .dock {
+    display: block;
+    height: 34px;
+    flex: none;
+  }
+  nav ul {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  nav a,
+  .lang {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 15px;
+    color: var(--ink-2);
+    transition:
+      color 0.15s,
+      background 0.2s,
+      box-shadow 0.2s;
+  }
+  /* Hover and current page: a lighter drop of glass inside the capsule */
+  nav a:hover,
+  nav a[aria-current='page'],
+  .lang:hover,
+  .theme:hover {
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.42);
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.8),
+      inset 0 -1px 1px rgba(255, 255, 255, 0.2),
+      0 2px 8px rgba(30, 70, 90, 0.1);
+  }
+  :global(:root[data-theme='dark']) nav a:hover,
+  :global(:root[data-theme='dark']) nav a[aria-current='page'],
+  :global(:root[data-theme='dark']) .lang:hover,
+  :global(:root[data-theme='dark']) .theme:hover {
+    background: rgba(255, 255, 255, 0.09);
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.22),
+      0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+  .lang {
+    font-family: var(--mono);
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .theme {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 999px;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    transition:
+      background 0.2s,
+      box-shadow 0.2s;
+  }
+  /*
+   * One icon that morphs: a crescent moon by day (click for night), and a sun
+   * by night (click for day). The bite slides away, the core shrinks, the rays grow.
+   */
+  .sky-icon {
+    width: 22px;
+    height: 22px;
+    overflow: visible;
+    transition: rotate 0.6s cubic-bezier(0.3, 1.5, 0.5, 1);
+  }
+  .core {
+    fill: currentColor;
+    transform-origin: 12px 12px;
+    transition:
+      scale 0.5s cubic-bezier(0.3, 1.5, 0.5, 1),
+      fill 0.3s;
+  }
+  .bite {
+    transition: translate 0.5s cubic-bezier(0.5, 0, 0.2, 1);
+  }
+  .rays {
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    transform-origin: 12px 12px;
+    opacity: 0;
+    scale: 0.4;
+    rotate: -45deg;
+    transition:
+      opacity 0.3s,
+      scale 0.5s cubic-bezier(0.3, 1.5, 0.5, 1),
+      rotate 0.6s cubic-bezier(0.3, 1.5, 0.5, 1);
+  }
+  :global(:root[data-theme='dark']) .theme {
+    color: #f6b949;
+  }
+  :global(:root[data-theme='dark']) .core {
+    scale: 0.55;
+  }
+  :global(:root[data-theme='dark']) .bite {
+    translate: 12px -12px;
+  }
+  :global(:root[data-theme='dark']) .rays {
+    opacity: 1;
+    scale: 1;
+    rotate: 0deg;
+  }
+  /* No gap before the name while the avatar is still in the hero */
+  .dock {
+    width: 0;
+    margin-right: -10px;
+    transition:
+      width 0.45s cubic-bezier(0.3, 1.3, 0.5, 1),
+      margin 0.45s cubic-bezier(0.3, 1.3, 0.5, 1);
+  }
+  :global(html[data-avatar-docked]) .dock {
+    width: 34px;
+    margin-right: 0;
+  }
+  .menu {
+    display: none;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .menu :global(svg) {
+    grid-area: 1 / 1;
+    width: 22px;
+    height: 22px;
+  }
+  .menu .close,
+  .bar[data-open] .menu .open {
+    display: none;
+  }
+  .bar[data-open] .menu .close {
+    display: block;
+  }
+  /* Phones: one row (avatar and name, theme, language, menu); the menu unfolds below */
+  @media (max-width: 640px) {
+    .bar {
+      flex-wrap: wrap;
+      gap: 4px 6px;
+      padding: 8px 8px 8px 12px;
+    }
+    .bar[data-open] {
+      border-radius: 26px;
+    }
+    .brand {
+      font-size: 17px;
+    }
+    .menu {
+      display: grid;
+    }
+    nav {
+      display: none;
+      order: 5;
+      width: 100%;
+    }
+    .bar[data-open] nav {
+      display: block;
+    }
+    nav ul {
+      flex-direction: column;
+      gap: 2px;
+      padding: 6px 0 4px;
+    }
+    nav a {
+      display: block;
+      padding: 12px 14px;
+      font-size: 17px;
+    }
+  }
+</style>

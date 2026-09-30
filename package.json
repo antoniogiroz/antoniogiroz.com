@@ -7,22 +7,30 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "astro check"
   },
   "dependencies": {
     "@astrojs/vercel": "^11.0.11",
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
+    "@fontsource/silkscreen": "^5.3.0",
     "@fontsource/sora": "5.3.0",
     "astro": "7.3.5",
     "astro-icon": "1.2.0"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@iconify-json/emojione": "1.2.3",
     "@iconify-json/logos": "1.2.14",
     "@iconify-json/ri": "1.2.10",
+    "@iconify-json/simple-icons": "^1.2.97",
     "@unocss/astro": "66.10.5",
     "@unocss/reset": "66.10.5",
     "postcss": "8.5.28",
     "postcss-preset-env": "11.5.4",
+    "typescript": "^6.0.3",
     "unocss": "66.10.5",
     "vite": "8.3.1"
   }

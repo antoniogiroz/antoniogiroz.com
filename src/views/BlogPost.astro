@@ -1,0 +1,67 @@
+---
+import { render } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import { localePath, useTranslations, type Lang } from '../i18n/ui';
+import { formatDate, getPosts, postSlug, type Post } from '../lib/posts';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const lang = post.data.lang as Lang;
+const t = useTranslations(lang);
+const other: Lang = lang === 'es' ? 'en' : 'es';
+const translation = (await getPosts(other)).find((p) => p.data.translationKey === post.data.translationKey);
+const alternate = translation ? localePath(other, `/blog/${postSlug(translation)}`) : localePath(other, '/blog');
+const { Content } = await render(post);
+---
+
+<Layout lang={lang} title={post.data.title} description={post.data.description} alternate={alternate}>
+  <article class="wrap page">
+    <a class="back" href={localePath(lang, '/blog')}>← {t('blog.back')}</a>
+    <header>
+      <p class="eyebrow">
+        <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date, lang)}</time>
+        {post.data.draft && <span> · {t('blog.draft')}</span>}
+      </p>
+      <h1>{post.data.title}</h1>
+      <p class="lede">{post.data.description}</p>
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .page {
+    padding-block: clamp(40px, 7vw, 88px);
+    display: grid;
+    gap: 32px;
+  }
+  .back {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--ink-2);
+    text-decoration: none;
+  }
+  .back:hover {
+    color: var(--brand-ink);
+  }
+  header {
+    display: grid;
+    gap: 16px;
+    max-width: 66ch;
+  }
+  h1 {
+    font-size: clamp(40px, 6vw, 72px);
+    letter-spacing: -0.03em;
+    max-width: 18ch;
+  }
+  .lede {
+    font-size: 20px;
+    color: var(--ink-2);
+    max-width: 56ch;
+  }
+</style>

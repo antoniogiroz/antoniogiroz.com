@@ -1,28 +1,206 @@
 ---
-import Footer from '../components/Footer.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { localePath, stripLang, useTranslations, type Lang } from '../i18n/ui';
 import '../styles/index.css';
 
-export interface Props {
-  title: string;
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  /** URL of this page in the other language */
+  alternate?: string;
+  /** Home: the hero avatar docks in the header and contact lives in the page */
+  home?: boolean;
+  /** The page has its own big avatar, which travels between pages instead of the header one */
+  ownAvatar?: boolean;
 }
 
-const { title } = Astro.props;
+const { lang, title, description, home = false, ownAvatar = false } = Astro.props;
+const t = useTranslations(lang);
+const other: Lang = lang === 'es' ? 'en' : 'es';
+const alternate = Astro.props.alternate ?? localePath(other, stripLang(Astro.url.pathname));
+const pageTitle = title ? `${title} · Antonio Giroz` : t('meta.title');
+const pageDescription = description ?? t('meta.description');
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
 ---
 
-<!DOCTYPE html>
-<html lang="en" class="antialiased text-slate-700">
+<!doctype html>
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={lang} href={canonical} />
+    <link rel="alternate" hreflang={other} href={new URL(alternate, Astro.site)} />
+    <meta name="theme-color" content="#e3eff1" />
+    <script is:inline>
+      // Set the theme before the first paint, so there is no flash
+      (() => {
+        let stored = null;
+        try {
+          stored = localStorage.getItem('theme');
+        } catch {}
+        const dark = stored ? stored === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        document.querySelector('meta[name="theme-color"]').content = dark ? '#0b151c' : '#e3eff1';
+      })();
+    </script>
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Antonio Giroz" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_GB'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
   </head>
-  <body class="flex flex-col">
-    <slot />
-    <Footer />
+  <body>
+    <SiteHeader lang={lang} alternate={alternate} dock={home} avatarVt={!home && !ownAvatar} />
+    <main id="content">
+      <slot />
+    </main>
+    <SiteFooter lang={lang} socials={!home} dusk={home} />
+    <svg class="glass-defs" width="0" height="0" aria-hidden="true" focusable="false"></svg>
+    <p id="avatar-live" class="visually-hidden" aria-live="polite"></p>
+    <script>
+      /*
+       * Liquid Glass refraction (Chromium only): for each [data-glass] element we
+       * draw a displacement map from its exact rounded shape. Near the edge, the
+       * map pulls the backdrop inward, so what is behind bends like a thick lens.
+       */
+      const defs = document.querySelector('.glass-defs');
+      // Refraction costs GPU time on every scroll frame: only on Chromium and on capable devices
+      const chromium =
+        'userAgentData' in navigator && CSS.supports('backdrop-filter', 'url(#a) blur(1px)') && (navigator.hardwareConcurrency ?? 8) > 4;
+      const calm = matchMedia('(prefers-reduced-transparency: reduce)').matches;
+      const SVG = 'http://www.w3.org/2000/svg';
+
+      /*
+       * The glass is a convex lens: flat in the middle, curving down at the rim.
+       * Light bends with the slope of that surface, so the displacement is zero
+       * in the middle and grows fast near the edge. The map stores it in R (x) and G (y).
+       */
+      function lensMap(w: number, h: number, r: number, bevel: number) {
+        const c = document.createElement('canvas');
+        c.width = w;
+        c.height = h;
+        const ctx = c.getContext('2d');
+        if (!ctx) return '';
+        const img = ctx.createImageData(w, h);
+        const d = img.data;
+        for (let y = 0; y < h; y++) {
+          for (let x = 0; x < w; x++) {
+            const px = x + 0.5 - w / 2;
+            const py = y + 0.5 - h / 2;
+            const qx = Math.abs(px) - (w / 2 - r);
+            const qy = Math.abs(py) - (h / 2 - r);
+            const ox = Math.max(qx, 0);
+            const oy = Math.max(qy, 0);
+            // Distance to the edge, positive inside the rounded shape
+            const inside = -(Math.hypot(ox, oy) + Math.min(Math.max(qx, qy), 0) - r);
+            let nx = 0;
+            let ny = 0;
+            if (inside > 0 && inside < bevel) {
+              let gx = 0;
+              let gy = 0;
+              if (qx > 0 && qy > 0) {
+                const l = Math.hypot(ox, oy) || 1;
+                gx = (ox / l) * Math.sign(px);
+                gy = (oy / l) * Math.sign(py);
+              } else if (qx > qy) gx = Math.sign(px);
+              else gy = Math.sign(py);
+              // Slope of a quarter circle profile, softened so it never explodes at the rim
+              const s = 1 - inside / bevel;
+              const slope = s / Math.sqrt(Math.max(0.06, 1 - s * s));
+              const k = Math.min(1, slope * 0.4);
+              nx = -gx * k;
+              ny = -gy * k;
+            }
+            const i = (y * w + x) * 4;
+            d[i] = 128 + nx * 127;
+            d[i + 1] = 128 + ny * 127;
+            d[i + 2] = 128;
+            d[i + 3] = 255;
+          }
+        }
+        ctx.putImageData(img, 0, 0);
+        return c.toDataURL();
+      }
+
+      // Red, green and blue bend by slightly different amounts: a thin rainbow fringe at the rim
+      const channel = (scale: number, name: string, matrix: string) =>
+        `<feDisplacementMap in="SourceGraphic" in2="map" scale="${scale}" xChannelSelector="R" yChannelSelector="G" result="d${name}"/>` +
+        `<feColorMatrix in="d${name}" type="matrix" values="${matrix}" result="${name}"/>`;
+      const FILTER =
+        '<feImage result="map" preserveAspectRatio="none"/>' +
+        channel(30, 'r', '1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0') +
+        channel(29, 'g', '0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0') +
+        channel(28, 'b', '0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0') +
+        '<feBlend in="r" in2="g" mode="screen" result="rg"/><feBlend in="rg" in2="b" mode="screen"/>';
+
+      function refract(el: HTMLElement, id: string) {
+        const w = Math.round(el.offsetWidth);
+        const h = Math.round(el.offsetHeight);
+        if (!w || !h || !defs) return;
+        const radius = Math.min(parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0, h / 2, w / 2);
+        let filter = defs.querySelector<SVGFilterElement>(`#${id}`);
+        if (!filter) {
+          filter = document.createElementNS(SVG, 'filter');
+          filter.id = id;
+          filter.setAttribute('color-interpolation-filters', 'sRGB');
+          filter.innerHTML = FILTER;
+          defs.append(filter);
+        }
+        for (const [k, v] of Object.entries({ x: 0, y: 0, width: w, height: h, filterUnits: 'userSpaceOnUse' })) filter.setAttribute(k, String(v));
+        const map = filter.querySelector('feImage');
+        map?.setAttribute('href', lensMap(w, h, radius, Math.min(30, h / 2)));
+        map?.setAttribute('width', String(w));
+        map?.setAttribute('height', String(h));
+        // Apple's glass is clear: almost no blur, the edge does the work
+        el.style.backdropFilter = `url(#${id}) blur(1.2px) saturate(1.4) brightness(1.04)`;
+        el.dataset.refract = '';
+      }
+
+      if (chromium && !calm) {
+        document.querySelectorAll<HTMLElement>('[data-glass]').forEach((el, i) => {
+          const id = `liquid-glass-${i}`;
+          let timer = 0;
+          const later = (ms: number) => {
+            clearTimeout(timer);
+            timer = window.setTimeout(() => refract(el, id), ms);
+          };
+          new ResizeObserver(() => later(60)).observe(el);
+        });
+      }
+
+      // The specular highlight follows the pointer, like light moving over glass
+      document.querySelectorAll<HTMLElement>('[data-glass]').forEach((el) => {
+        el.addEventListener('pointermove', (e) => {
+          const r = el.getBoundingClientRect();
+          el.style.setProperty('--gx', `${((e.clientX - r.left) / r.width) * 100}%`);
+          el.style.setProperty('--gy', `${((e.clientY - r.top) / r.height) * 100}%`);
+        });
+        el.addEventListener('pointerleave', () => {
+          el.style.removeProperty('--gx');
+          el.style.removeProperty('--gy');
+        });
+      });
+
+      const root = document.documentElement;
+      const onScroll = () => root.toggleAttribute('data-scrolled', scrollY > 8);
+      addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    </script>
   </body>
 </html>

@@ -1,0 +1,64 @@
+# status: live | building | idea · icon: a pixel icon from src/lib/pixels.ts
+- id: antoniogiroz-com
+  name: antoniogiroz.com
+  kind: web
+  status: live
+  year: 2026
+  order: 1
+  icon: avatar
+  repo: https://github.com/antoniogiroz/antoniogiroz.com
+  platforms: [Web]
+  stack: [Astro, TypeScript, Canvas]
+  mood: grin
+  say: { es: "¡Estás aquí!", en: "You're here!" }
+  description:
+    es: Esta web. Un avatar pixel art que parpadea, te sigue con la mirada y reacciona a lo que tocas.
+    en: This site. A pixel art avatar that blinks, follows you with its eyes and reacts to what you touch.
+
+- id: antonio-en-pixeles
+  name: Antonio en píxeles
+  kind: web
+  status: live
+  year: 2026
+  order: 2
+  icon: palette
+  url: /avatar/
+  platforms: [Web]
+  stack: [Canvas, GIF, SVG]
+  mood: wink
+  say: { es: "Ahí me hicieron todas estas caras", en: "That is where I got all these faces" }
+  description:
+    es: Un estudio para mi avatar. Cambia caras, colores y formas, y exporta a PNG, SVG, GIF animado o un pack de pegatinas.
+    en: A studio for my avatar. Change faces, colors and shapes, and export to PNG, SVG, animated GIF or a sticker pack.
+
+- id: glifo
+  name: Glifo
+  kind: app
+  status: building
+  year: 2026
+  order: 3
+  icon: glyph
+  follow: true
+  platforms: [macOS]
+  stack: [Swift, SwiftUI, Foundation Models]
+  mood: surprise
+  say: { es: "Mi app para Mac", en: "My Mac app" }
+  description:
+    es: Describe el icono que necesitas y Glifo te propone los símbolos que encajan, sin salir del Mac.
+    en: Describe the icon you need and Glifo suggests the symbols that fit, without leaving your Mac.
+
+- id: fitmark
+  name: FitMark
+  kind: app
+  status: idea
+  year: 2026
+  order: 4
+  icon: dumbbell
+  follow: true
+  platforms: [iPhone, Apple Watch, Mac]
+  stack: [Swift, SwiftUI]
+  mood: grin
+  say: { es: "Para no olvidar el peso de cada máquina", en: "So I never forget a machine weight" }
+  description:
+    es: Recuerda el peso de cada máquina del gimnasio y sigue la rutina de hoy, desde la muñeca.
+    en: Remembers the weight for every gym machine and tracks today's routine, right from your wrist.

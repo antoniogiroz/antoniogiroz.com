@@ -5,8 +5,15 @@ import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'server',
+  site: 'https://antoniogiroz.com',
+  // Every page is prerendered; the Vercel adapter still handles deployment
+  output: 'static',
   adapter: vercel(),
+  i18n: {
+    locales: ['es', 'en'],
+    defaultLocale: 'es',
+    routing: { prefixDefaultLocale: false },
+  },
   // Astro 7 defaults to 'jsx', which removes spaces between text and inline tags
   compressHTML: true,
   integrations: [
@@ -16,32 +23,38 @@ export default defineConfig({
     icon({
       include: {
         logos: [
-          'typescript-icon',
           'vue',
+          'typescript-icon',
+          'swift',
           'nuxt-icon',
           'astro-icon',
-          'webcomponents',
-          'lit-icon',
-          'react-query-icon',
-          'supabase-icon',
-          'graphql',
-          'figma',
           'vitejs',
           'vitest',
-          'testing-library',
           'playwright',
+          'react-query-icon',
+          'graphql',
+          'figma',
           'tailwindcss-icon',
-          'postcss',
           'cloudflare-icon',
-          'netlify-icon',
           'vercel-icon',
-          'arc',
-          'wordpress-icon-alt',
-          'swift',
-          'ios'
         ],
-        ri: ['bluesky-line', 'twitter-x-line', 'github-line', 'linkedin-box-line'],
-        emojione: ['waving-hand'],
+        'simple-icons': [
+          'vuedotjs',
+          'typescript',
+          'swift',
+          'nuxt',
+          'astro',
+          'vite',
+          'vitest',
+          'playwright',
+          'tanstack',
+          'graphql',
+          'figma',
+          'tailwindcss',
+          'cloudflare',
+          'vercel',
+        ],
+        ri: ['bluesky-line', 'twitter-x-line', 'github-line', 'linkedin-box-line', 'menu-line', 'close-line'],
       },
     }),
   ],

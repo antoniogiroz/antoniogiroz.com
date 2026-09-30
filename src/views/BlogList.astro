@@ -1,0 +1,104 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { localePath, useTranslations, type Lang } from '../i18n/ui';
+import { formatDate, getPosts, postSlug } from '../lib/posts';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const posts = await getPosts(lang);
+---
+
+<Layout lang={lang} title={t('blog.title')} description={t('blog.intro')}>
+  <section class="wrap page">
+    <div class="section-head">
+      <p class="eyebrow">{posts.length} {posts.length === 1 ? t('blog.count.one') : t('blog.count.many')}</p>
+      <h1>{t('blog.title')}</h1>
+      <p>{t('blog.intro')}</p>
+    </div>
+    {
+      posts.length ? (
+        <ul class="posts">
+          {posts.map((post) => (
+            <li>
+              <a href={localePath(lang, `/blog/${postSlug(post)}`)} data-mood="smile">
+                <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date, lang)}</time>
+                <span class="text">
+                  <span class="title">{post.data.title}</span>
+                  <span class="desc">{post.data.description}</span>
+                </span>
+                {post.data.draft && <span class="draft">{t('blog.draft')}</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="empty">{t('blog.empty')}</p>
+      )
+    }
+  </section>
+</Layout>
+
+<style>
+  .page {
+    padding-block: clamp(48px, 8vw, 96px);
+  }
+  h1 {
+    font-size: clamp(46px, 7vw, 88px);
+    letter-spacing: -0.035em;
+  }
+  .posts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .posts a {
+    display: grid;
+    grid-template-columns: 12ch minmax(0, 1fr) auto;
+    gap: 6px 24px;
+    align-items: baseline;
+    padding-block: 24px;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+  }
+  time {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .text {
+    display: grid;
+    gap: 6px;
+  }
+  .title {
+    font: 700 clamp(22px, 2.6vw, 30px) / 1.2 var(--display);
+  }
+  a:hover .title {
+    color: var(--brand-ink);
+  }
+  .desc {
+    color: var(--ink-2);
+  }
+  .draft {
+    font: 600 11px/1 var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 6px 9px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--ink-2);
+  }
+  .empty {
+    color: var(--ink-2);
+  }
+  @media (max-width: 640px) {
+    .posts a {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
