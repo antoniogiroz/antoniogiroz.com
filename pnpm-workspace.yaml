@@ -1,2 +1,6 @@
+# A single-package project. pnpm 9 (used by Vercel for lockfile v9) needs the packages field.
+packages:
+  - '.'
+
 allowBuilds:
   esbuild: true
